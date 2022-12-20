@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:techno_teacher/pages/homepage/homepage.dart';
+import 'package:techno_teacher/pages/welcome/welcome.dart';
+import 'package:techno_teacher/theme/light.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,10 +12,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SafeArea(child: Homepage()),
+      home: const SafeArea(child: WelcomePage()),
       title: 'Techno Teacher',
+      theme: light,
     );
   }
 }
