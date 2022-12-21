@@ -56,6 +56,7 @@ class _NewPasswordState extends State<NewPassword> {
                     ),
                     h(40),
                     CustomTextField(
+                      obscureText: hidePassword,
                       controller: newPassword,
                       labelText: 'New Password',
                       suffix: IconButton(
@@ -71,6 +72,7 @@ class _NewPasswordState extends State<NewPassword> {
                     ),
                     h(15),
                     CustomTextField(
+                      obscureText: hidePassword,
                       controller: cNewPassword,
                       labelText: 'Confirm Password',
                       suffix: IconButton(

@@ -55,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     h(15),
                     CustomTextField(
+                      obscureText: hidePassword,
                       controller: password,
                       labelText: 'Enter your password',
                       suffix: IconButton(

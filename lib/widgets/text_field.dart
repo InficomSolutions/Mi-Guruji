@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final int? maxLength;
   final TextInputType? keyboardType;
-
+  final bool obscureText;
   const CustomTextField({
     Key? key,
     required this.controller,
@@ -19,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     this.suffix,
     this.prefix,
     this.validator,
+    this.obscureText = false,
     this.labelText,
     this.keyboardType,
     this.maxLength,
@@ -32,6 +33,7 @@ class CustomTextField extends StatelessWidget {
       child: TextFormField(
         validator: validator,
         cursorColor: Colors.black,
+        obscureText: obscureText,
         controller: controller,
         keyboardType: keyboardType,
         inputFormatters: [LengthLimitingTextInputFormatter(maxLength)],

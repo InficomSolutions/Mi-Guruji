@@ -14,7 +14,7 @@ class CustomButton extends StatelessWidget {
     this.fullWidth = false,
     this.bgColor,
     this.fgColor,
-    this.borderColor = Colors.white,
+    this.borderColor = Colors.black,
   }) : super(key: key);
 
   @override

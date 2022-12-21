@@ -70,6 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     h(15),
                     CustomTextField(
+                      obscureText: hidePassword,
                       controller: password,
                       labelText: 'Password',
                       suffix: IconButton(
@@ -85,6 +86,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     h(15),
                     CustomTextField(
+                      obscureText: hidePassword,
                       controller: cPassword,
                       labelText: 'Confirm password',
                       suffix: IconButton(

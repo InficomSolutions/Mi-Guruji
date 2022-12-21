@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:techno_teacher/pages/homepage/homepage.dart';
 import 'package:techno_teacher/pages/login/login.dart';
 import 'package:techno_teacher/pages/register/register.dart';
 import 'package:techno_teacher/utils/images.dart';
@@ -47,7 +48,9 @@ class _WelcomePageState extends State<WelcomePage> {
               ],
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                replaceScreen(context, const Homepage());
+              },
               child: const Text(
                 'Continue as a guest',
                 style: TextStyle(

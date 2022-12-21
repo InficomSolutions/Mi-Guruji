@@ -86,7 +86,7 @@ class _OTPState extends State<OTP> {
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                   borderSide:
-                                      const BorderSide(color: Colors.grey),
+                                      const BorderSide(color: Colors.blue),
                                 ),
                               ),
                             ),
