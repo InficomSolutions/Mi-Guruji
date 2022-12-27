@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:techno_teacher/pages/forgot_password/forgot_password.dart';
 import 'package:techno_teacher/pages/register/register.dart';
 import 'package:techno_teacher/utils/extension.dart';
+import 'package:techno_teacher/utils/images.dart';
 import 'package:techno_teacher/utils/navigation.dart';
 import 'package:techno_teacher/utils/text_styles.dart';
 import 'package:techno_teacher/widgets/back_button.dart';
@@ -33,8 +35,11 @@ class _LoginPageState extends State<LoginPage> {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height - kToolbarHeight,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: Image.asset(Images.login).image, fit: BoxFit.fill)),
             child: Form(
               key: formKey,
               child: Padding(
@@ -43,11 +48,13 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const CustomBackButton(),
-                    h(28),
-                    Text(
-                      'Welcome back! Glad to see you, Again!',
-                      style: bold(15),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 6,
                     ),
+                    // Text(
+                    //   'Welcome back! Glad to see you, Again!',
+                    //   style: bold(15),
+                    // ),
                     const Spacer(),
                     CustomTextField(
                       controller: userName,
@@ -93,7 +100,9 @@ class _LoginPageState extends State<LoginPage> {
                       bgColor: Colors.black,
                       fgColor: Colors.white,
                     ),
-                    const Spacer(),
+                    SizedBox(
+                      height: 70,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -101,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                         w(3),
                         InkWell(
                           onTap: () {
-                            replaceScreen(context, const RegisterPage());
+                            replaceScreen(context,  RegisterPage());
                           },
                           child: Text(
                             'Register Now',
@@ -110,6 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
+                    h(100)
                   ],
                 ),
               ),

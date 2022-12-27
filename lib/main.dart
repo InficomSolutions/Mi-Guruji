@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:techno_teacher/pages/welcome/welcome.dart';
 import 'package:techno_teacher/theme/light.dart';
 import 'package:techno_teacher/utils/constants.dart';
@@ -13,9 +14,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SafeArea(child: WelcomePage()),
+      home: const WelcomePage(),
       title: AppConstants.appName,
       theme: light,
     );

@@ -9,6 +9,8 @@ import 'package:techno_teacher/utils/navigation.dart';
 import 'package:techno_teacher/widgets/drawer.dart';
 import 'package:techno_teacher/widgets/sizedbox.dart';
 
+import 'dhashboard.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
 
@@ -21,79 +23,167 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        drawer: const CustomDrawer(),
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              floating: true,
-              elevation: 0,
-              titleSpacing: 0,
-              title: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) => const SelectProfile());
-                    },
-                    child: CircleAvatar(
-                      backgroundImage: Image.asset(Images.profile).image,
-                    ),
-                  ),
-                  w(15),
-                  Text(AppConstants.appName),
-                ],
+    return Scaffold(
+      drawer: const CustomDrawer(),
+      appBar: AppBar(
+        elevation: 0.7,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => const SelectProfile());
+              },
+              child: CircleAvatar(
+                backgroundImage: Image.asset(Images.profile).image,
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Container(
-                    padding: const EdgeInsets.all(8),
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.black),
-                    child: SvgPicture.asset(
-                      Images.bell,
-                      height: 20,
-                      width: 20,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Container(
-                    padding: const EdgeInsets.all(8),
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.black),
-                    child: SvgPicture.asset(
-                      Images.language,
-                    ),
-                  ),
-                ),
-              ],
             ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SliderView(),
-                  GestureDetector(
-                    onTap: () {
-                      toScreen(context, const DetailsPage());
-                    },
-                    child: Image.asset(Images.homeItems),
-                  ),
-                ],
-              ),
-            )
+            w(15),
+            Text(AppConstants.appName),
           ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.black),
+              child: SvgPicture.asset(
+                Images.bell,
+                height: 20,
+                width: 20,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.black),
+              child: SvgPicture.asset(
+                Images.language,
+              ),
+            ),
+          ),
+        ],
+      ),
+     /*   body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            floating: true,
+            elevation: 0,
+            titleSpacing: 0,
+            title: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (context) => const SelectProfile());
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: Image.asset(Images.profile).image,
+                  ),
+                ),
+                w(15),
+                Text(AppConstants.appName),
+              ],
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  width: 50,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.black),
+                  child: SvgPicture.asset(
+                    Images.bell,
+                    height: 20,
+                    width: 20,
+                  ),
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  width: 50,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.black),
+                  child: SvgPicture.asset(
+                    Images.language,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                const SliderView(),
+
+                      Text("gdhgshfsdkjkg"),
+                      Dashboard(),
+                // GestureDetector(
+                //   onTap: () {
+                //     toScreen(context, const DetailsPage());
+                //   },
+                //   child: Dashboard(),
+                // ),
+              ],
+            ),
+          )
+        ],
+      ),*/
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 10,),
+            const SliderView(),
+            const SizedBox(height: 20,),
+            gridList()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget gridList(){
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: Images.data.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount:3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10),
+        itemBuilder: (BuildContext context, int index) {
+          return Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: InkWell(onTap: (){
+              toScreen(context, DetailsPage(title:Images.data[index][1]));
+            },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.asset(Images.data[index][0]),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

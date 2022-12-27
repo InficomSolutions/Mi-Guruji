@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:techno_teacher/pages/login/login.dart';
+import 'package:techno_teacher/pages/my_school/School_registration.dart';
+import 'package:techno_teacher/pages/profile/my_profile.dart';
 import 'package:techno_teacher/utils/extension.dart';
 import 'package:techno_teacher/utils/icons.dart';
 import 'package:techno_teacher/utils/navigation.dart';
@@ -77,16 +79,121 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
             ],
           ),
+          h(10),
+          const Divider(thickness: 1,),
           h(20),
-          DrawerItem(title: 'My Profile', path: AppIcons.profile),
-          DrawerItem(title: 'My School', path: AppIcons.school),
-          DrawerItem(title: 'My Plan', path: AppIcons.plan),
-          DrawerItem(title: 'Help', path: AppIcons.help),
-          DrawerItem(
-            title: 'Logout',
-            path: AppIcons.logout,
-            logout: true,
+          h(20),
+          InkWell(onTap: (){
+            toScreen(context, MyProfile());
+          },
+            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                      AppIcons.profile,
+                  ),
+                ),
+               const SizedBox(width: 15,),
+                Text(
+                  "My Profile",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
           ),
+          h(20),
+          h(10),
+          InkWell(onTap: (){
+            toScreen(context, SchoolRegistration());
+          },
+            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                    AppIcons.school,
+                  ),
+                ),
+               const SizedBox(width: 15,),
+                Text(
+                  "My School",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
+          ),
+          h(20),
+          h(10),
+          Row(mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20,
+                width: 30,
+                child: SvgPicture.asset(
+                  AppIcons.plan,
+                ),
+              ),
+              const SizedBox(width: 15,),
+              Text(
+                "My Plans",
+                style: bold(16, '#A80D37'.toColor()),
+              ),
+            ],
+          ),
+          h(20),
+          h(10),
+          Row(mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20,
+                width: 30,
+                child: SvgPicture.asset(
+                  AppIcons.help,
+                ),
+              ),
+              const SizedBox(width: 15,),
+              Text(
+                "Help",
+                style: bold(16, '#A80D37'.toColor()),
+              ),
+            ],
+          ),
+          h(20),
+          h(10),
+          InkWell(onTap: (){
+            removeScreens(context, const LoginPage());
+            return;
+          },
+            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                    AppIcons.logout,
+                  ),
+                ),
+                const SizedBox(width: 15,),
+                Text(
+                  "Logout",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
+          ),
+          // DrawerItem(title: 'My Profile', path: AppIcons.profile),
+          // DrawerItem(title: 'My School', path: AppIcons.school),
+          // DrawerItem(title: 'My Plan', path: AppIcons.plan),
+          // DrawerItem(title: 'Help', path: AppIcons.help),
+          // DrawerItem(title: 'Logout', path: AppIcons.logout, logout: true,),
         ],
       ),
     );
@@ -127,6 +234,7 @@ class DrawerItem extends StatelessWidget {
           removeScreens(context, const LoginPage());
           return;
         }
+
         pop(context);
         toScreen(context, page);
       },

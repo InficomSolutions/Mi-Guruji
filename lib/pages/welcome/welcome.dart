@@ -39,7 +39,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 h(20),
                 CustomButton(
                   onPressed: () {
-                    toScreen(context, const RegisterPage());
+                    toScreen(context, RegisterPage());
                   },
                   text: 'Register',
                   fullWidth: true,

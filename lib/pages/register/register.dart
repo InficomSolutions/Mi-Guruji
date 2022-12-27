@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:techno_teacher/pages/login/login.dart';
 import 'package:techno_teacher/utils/extension.dart';
 import 'package:techno_teacher/utils/navigation.dart';
@@ -7,35 +8,26 @@ import 'package:techno_teacher/widgets/back_button.dart';
 import 'package:techno_teacher/widgets/button.dart';
 import 'package:techno_teacher/widgets/sizedbox.dart';
 import 'package:techno_teacher/widgets/text_field.dart';
+import '../../getx_controller/auth/sign_up_controller.dart';
+import '../../utils/images.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class RegisterPage extends StatelessWidget {
+  RegisterPage({Key? key}) : super(key: key);
 
-  @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
   GlobalKey<FormState> formKey = GlobalKey();
-  TextEditingController userName = TextEditingController();
-  TextEditingController contact = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController cPassword = TextEditingController();
-  bool hidePassword = true;
 
-  togglePassword() {
-    setState(() {
-      hidePassword = !hidePassword;
-    });
-  }
+  SignUpController _schoolController = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height - kToolbarHeight,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: Image.asset(Images.signup).image, fit: BoxFit.fill)),
             child: Form(
               key: formKey,
               child: Padding(
@@ -47,9 +39,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     h(28),
                     Text(
                       'Hello! Register to get started',
-                      style: bold(15),
+                      style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600,color: Colors.black87)
                     ),
-                    const Spacer(),
+                    h(18),
                     Text(
                       'We will send you confirmation code',
                       style: TextStyle(
@@ -57,26 +49,26 @@ class _RegisterPageState extends State<RegisterPage> {
                         color: '#8391A1'.toColor(),
                       ),
                     ),
-                    const Spacer(),
+                    h(68),
                     CustomTextField(
-                      controller: userName,
+                      controller: _schoolController.userName.value,
                       labelText: 'Username',
                     ),
                     h(15),
                     CustomTextField(
-                      controller: contact,
+                      controller: _schoolController.contact.value,
                       labelText: 'Contact number',
                       keyboardType: TextInputType.number,
                     ),
                     h(15),
                     CustomTextField(
-                      obscureText: hidePassword,
-                      controller: password,
+                      obscureText: _schoolController.hidePassword.value,
+                      controller: _schoolController.password.value,
                       labelText: 'Password',
                       suffix: IconButton(
-                        onPressed: togglePassword,
+                        onPressed: _schoolController.togglePassword(),
                         icon: Icon(
-                          hidePassword
+                          _schoolController.hidePassword.value
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
                           color: Colors.grey,
@@ -86,13 +78,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     h(15),
                     CustomTextField(
-                      obscureText: hidePassword,
-                      controller: cPassword,
+                      obscureText: _schoolController.hidePassword.value,
+                      controller: _schoolController.cPassword.value,
                       labelText: 'Confirm password',
                       suffix: IconButton(
-                        onPressed: togglePassword,
+                        onPressed: _schoolController.togglePassword(),
                         icon: Icon(
-                          hidePassword
+                          _schoolController.hidePassword.value
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
                           color: Colors.grey,
@@ -102,13 +94,36 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     h(15),
                     h(20),
-                    CustomButton(
-                      fullWidth: true,
-                      onPressed: () {},
-                      text: 'Register',
-                      bgColor: Colors.black,
-                      fgColor: Colors.white,
+
+                    InkWell(onTap: (){
+                      _schoolController.signUpValidation();
+                      debugPrint("===============890");
+                    },
+                      child: Container(
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.black87),
+                        child: const Center(
+                            child: Text(
+                          "Register",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.white),
+                        )),
+                      ),
                     ),
+                    // CustomButton(
+                    //   fullWidth: true,
+                    //   onPressed: () {
+                    //
+                    //   },
+                    //   text: 'Register',
+                    //   bgColor: Colors.black,
+                    //   fgColor: Colors.white,
+                    // ),
                     const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -126,6 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ],
                     ),
+                    h(100)
                   ],
                 ),
               ),
