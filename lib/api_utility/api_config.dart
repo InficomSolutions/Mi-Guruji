@@ -7,11 +7,44 @@ import 'package:techno_teacher/getx_controller/auth/sign_up_controller.dart';
 import 'package:techno_teacher/getx_controller/teacher_info_controller/teacher_controller.dart';
 import 'package:techno_teacher/mode_data/auth/signup_model.dart';
 import '../getx_controller/student_info_controller/student_contorller.dart';
+import '../mode_data/letterpad/laterPadModel.dart';
+import '../mode_data/school_model/books_response.dart';
 import '../utils/snackbar/custom_snsckbar.dart';
 import 'cont_urls.dart';
 
 class APiProvider extends GetConnect {
 
+  registration() async {
+    SignUpController _schoolController = Get.put(SignUpController());
+    var body = {
+      "mobile": _schoolController.contact.value.text,
+      "email": _schoolController.userName.value.text,
+      "password": _schoolController.password.value.text,
+    };
+    debugPrint("=======res ${body}");
+    try {
+      Get.dialog(const Center(
+        child: CircularProgressIndicator(),
+      ));
+      var response = await post(
+        TGuruJiUrl.registration,
+        body,
+      );
+      debugPrint("=======res ${response.statusCode}");
+      if (response.statusCode == 200) {
+        Get.back();
+        SignUpModel model = SignUpModel.fromJson(response.body);
+        ShowCustomSnackBar().SuccessSnackBar(model.response.responseMessage);
+        return model;
+      } else {
+        Get.back();
+        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
+      }
+    } catch (e) {
+      Get.back();
+      ShowCustomSnackBar().ErrorSnackBar(e.toString());
+    }
+  }
 
   registrationSchool() async {
     SignUpController _schoolController = Get.put(SignUpController());
@@ -49,38 +82,6 @@ class APiProvider extends GetConnect {
     } catch (e) {
       Get.back();
       debugPrint("=============   ${e.toString()}");
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
-    }
-  }
-
-  registration() async {
-    SignUpController _schoolController = Get.put(SignUpController());
-    var body = {
-      "mobile": _schoolController.contact.value.text,
-      "email": _schoolController.userName.value.text,
-      "password": _schoolController.password.value.text,
-    };
-    debugPrint("=======res ${body}");
-    try {
-      Get.dialog(const Center(
-        child: CircularProgressIndicator(),
-      ));
-      var response = await post(
-        TGuruJiUrl.registration,
-        body,
-      );
-      debugPrint("=======res ${response.statusCode}");
-      if (response.statusCode == 200) {
-        Get.back();
-        SignUpModel model = SignUpModel.fromJson(response.body);
-        ShowCustomSnackBar().SuccessSnackBar(model.response.responseMessage);
-        return model;
-      } else {
-        Get.back();
-        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
-      }
-    } catch (e) {
-      Get.back();
       ShowCustomSnackBar().ErrorSnackBar(e.toString());
     }
   }
@@ -184,22 +185,39 @@ class APiProvider extends GetConnect {
   }
 
   letterPad() async{
-    SignUpController _schoolController = Get.put(SignUpController());
-    var body = {
-      "mobile": _schoolController.contact.value.text,
-      "email": _schoolController.userName.value.text,
-      "password": _schoolController.password.value.text,
-    };
-    debugPrint("=======res ${body}");
+    var token = "210Xag2Pb6U7qTiB";
     try {
       var response = await get(
-        TGuruJiUrl.laterPad,
-      );
+        TGuruJiUrl.laterPad, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'token': "$token",
+      });
       debugPrint("=======res ${response.statusCode}");
       if (response.statusCode == 200) {
-        SignUpModel model = SignUpModel.fromJson(response.body);
-        ShowCustomSnackBar().SuccessSnackBar(model.response.responseMessage);
-        return model;
+        LaterPadModel model = LaterPadModel.fromJson(response.body);
+        return model.data;
+      } else {
+        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
+      }
+    } catch (e) {
+      ShowCustomSnackBar().ErrorSnackBar(e.toString());
+    }
+  }
+
+  myBooks() async{
+    var token = "210Xag2Pb6U7qTiB";
+    try {
+      var response = await get(
+          TGuruJiUrl.booklist, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'token': "$token",
+      });
+      debugPrint("=======res ${response.statusCode}");
+      if (response.statusCode == 200) {
+        BookModel model = BookModel.fromJson(response.body);
+        return model.data;
       } else {
         ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
       }

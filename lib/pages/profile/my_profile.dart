@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:techno_teacher/getx_controller/my_profile_controller/my+profile_controller.dart';
+import 'package:techno_teacher/getx_controller/my_profile_controller/my_profile_controller.dart';
 
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/sizedbox.dart';

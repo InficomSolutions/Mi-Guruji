@@ -1,11 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:techno_teacher/api_utility/api_config.dart';
+import 'package:techno_teacher/mode_data/auth/signup_model.dart';
+import 'package:techno_teacher/mode_data/letterpad/laterPadModel.dart';
 import 'package:techno_teacher/pages/homepage/homepage.dart';
 
+import '../../mode_data/school_model/books_response.dart';
 import '../../utils/snackbar/custom_snsckbar.dart';
 
 class StudentController extends GetxController {
+
+ RxList<BookData> bookModel =
+     List<BookData>.empty(growable: true).obs;
+ RxList<LaterPadData> latterPadModel =
+     List<LaterPadData>.empty(growable: true).obs;
+
   Rx<TextEditingController> schoolName = TextEditingController().obs;
   Rx<TextEditingController> studentID = TextEditingController().obs;
   Rx<TextEditingController> adhaar = TextEditingController().obs;
@@ -15,6 +24,13 @@ class StudentController extends GetxController {
   Rx<TextEditingController> downloads = TextEditingController().obs;
   Rx<TextEditingController> parentIncome = TextEditingController().obs;
   Rx<TextEditingController> handicapType = TextEditingController().obs;
+
+
+  @override
+  void onInit() {
+    letterPad();
+    super.onInit();
+  }
 
   void checkValidation() {
     if (schoolName.value.text.isEmpty) {
@@ -45,6 +61,23 @@ class StudentController extends GetxController {
     if (response != null) {
       ShowCustomSnackBar().SuccessSnackBar(response.toString());
       Get.off(Homepage());
+    }
+  }
+
+
+  void letterPad() async{
+    var response = await APiProvider().letterPad();
+    if(response !=null){
+      latterPadModel.value = response;
+      debugPrint("latterPadModel ${latterPadModel.value}");
+    }
+  }
+
+  void myBooks() async{
+    var response = await APiProvider().myBooks();
+    if(response !=null){
+      bookModel.value = response;
+      debugPrint("bookModel ${bookModel.value}");
     }
   }
 }

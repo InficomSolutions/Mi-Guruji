@@ -7,5 +7,5 @@ class TGuruJiUrl {
  static const studentinfo = '${baseUrl}add_student_list';
  static const teacherInfo = '${baseUrl}add_teachers_info';
  static const laterPad = '${baseUrl}letterpad_details';
- static const book = '${baseUrl}book_by_class';
+ static const booklist = '${baseUrl}book_by_class';
 }

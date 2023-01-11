@@ -5,6 +5,8 @@ import 'package:techno_teacher/pages/welcome/welcome.dart';
 import 'package:techno_teacher/theme/light.dart';
 import 'package:techno_teacher/utils/constants.dart';
 
+import 'getx_controller/student_info_controller/student_contorller.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
@@ -24,4 +26,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
 

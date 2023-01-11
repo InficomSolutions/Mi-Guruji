@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:techno_teacher/getx_controller/student_info_controller/student_contorller.dart';
 import 'package:techno_teacher/pages/homepage/letterpad_view.dart';
 import 'package:techno_teacher/pages/login/login.dart';
 import 'package:techno_teacher/pages/my_school/School_registration.dart';
@@ -23,6 +24,8 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+
+  final StudentController _controller = Get.put(StudentController());
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -198,6 +201,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           h(20),
           h(10),
           InkWell(onTap: (){
+            _controller.letterPad();
             Get.to(()=>LetterPadView());
           },
             child: Row(
