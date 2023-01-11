@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:techno_teacher/pages/homepage/letterpad_view.dart';
 import 'package:techno_teacher/pages/login/login.dart';
 import 'package:techno_teacher/pages/my_school/School_registration.dart';
 import 'package:techno_teacher/pages/profile/my_profile.dart';
+import 'package:techno_teacher/pages/student_info/student_detail_form.dart';
+import 'package:techno_teacher/pages/teacher/teacher_info.dart';
 import 'package:techno_teacher/utils/extension.dart';
 import 'package:techno_teacher/utils/icons.dart';
 import 'package:techno_teacher/utils/navigation.dart';
@@ -80,23 +84,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ],
           ),
           h(10),
-          const Divider(thickness: 1,),
+          const Divider(
+            thickness: 1,
+          ),
           h(20),
           h(20),
-          InkWell(onTap: (){
-            toScreen(context, MyProfile());
-          },
-            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+          InkWell(
+            onTap: () {
+              toScreen(context, MyProfile());
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                   height: 20,
                   width: 30,
                   child: SvgPicture.asset(
-                      AppIcons.profile,
+                    AppIcons.profile,
                   ),
                 ),
-               const SizedBox(width: 15,),
+                const SizedBox(
+                  width: 15,
+                ),
                 Text(
                   "My Profile",
                   style: bold(16, '#A80D37'.toColor()),
@@ -106,10 +116,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           h(20),
           h(10),
-          InkWell(onTap: (){
-            toScreen(context, SchoolRegistration());
-          },
-            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+          InkWell(
+            onTap: () {
+              toScreen(context, SchoolRegistration());
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
@@ -119,7 +131,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     AppIcons.school,
                   ),
                 ),
-               const SizedBox(width: 15,),
+                const SizedBox(
+                  width: 15,
+                ),
                 Text(
                   "My School",
                   style: bold(16, '#A80D37'.toColor()),
@@ -129,26 +143,88 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           h(20),
           h(10),
-          Row(mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 20,
-                width: 30,
-                child: SvgPicture.asset(
-                  AppIcons.plan,
+          InkWell(
+            onTap: () {
+              Get.to(() => StudentInfo());
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                    AppIcons.profile,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 15,),
-              Text(
-                "My Plans",
-                style: bold(16, '#A80D37'.toColor()),
-              ),
-            ],
+                const SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Student Info",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
           ),
           h(20),
           h(10),
-          Row(mainAxisAlignment: MainAxisAlignment.start,
+          InkWell(
+            onTap: () {
+              Get.to(() => TeacherInfo());
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                    AppIcons.profile,
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "Teacher Info",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
+          ),
+          h(20),
+          h(10),
+          InkWell(onTap: (){
+            Get.to(()=>LetterPadView());
+          },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                    AppIcons.plan,
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "My Plans",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
+          ),
+          h(20),
+          h(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
@@ -158,7 +234,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   AppIcons.help,
                 ),
               ),
-              const SizedBox(width: 15,),
+              const SizedBox(
+                width: 15,
+              ),
               Text(
                 "Help",
                 style: bold(16, '#A80D37'.toColor()),
@@ -167,11 +245,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           h(20),
           h(10),
-          InkWell(onTap: (){
-            removeScreens(context, const LoginPage());
-            return;
-          },
-            child: Row(mainAxisAlignment: MainAxisAlignment.start,
+          InkWell(
+            onTap: () {
+              removeScreens(context, const LoginPage());
+              return;
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
@@ -181,7 +261,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     AppIcons.logout,
                   ),
                 ),
-                const SizedBox(width: 15,),
+                const SizedBox(
+                  width: 15,
+                ),
                 Text(
                   "Logout",
                   style: bold(16, '#A80D37'.toColor()),

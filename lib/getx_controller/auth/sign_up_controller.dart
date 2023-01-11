@@ -49,10 +49,11 @@ class SignUpController extends GetxController {
   }
 
   void registerSchool() async {
-    var response = await APiProvider().regitrationSchool();
+    var response = await APiProvider().registrationSchool();
     debugPrint("=======00090893asdsdadasd3333 $response");
     if (response != null) {
-      Get.back();
+      ShowCustomSnackBar().SuccessSnackBar(response);
+      Get.off(Homepage());
     }
 
   }
@@ -73,10 +74,10 @@ class SignUpController extends GetxController {
   }
 
   void register() async {
-    var response = await APiProvider().regitration();
+    var response = await APiProvider().registration();
     debugPrint("=======00090893asdsdadasd3333 $response");
     if (response != null) {
-      Get.to(()=>Homepage());
+      Get.off(const Homepage());
      // ShowCustomSnackBar().SuccessSnackBar(response.toString());
     }
 

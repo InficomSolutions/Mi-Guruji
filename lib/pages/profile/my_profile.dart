@@ -96,7 +96,7 @@ class MyProfile extends StatelessWidget {
             ),
             h(20),
             Container(height: 50,margin: EdgeInsets.symmetric(horizontal: 14),
-            decoration: BoxDecoration(color: Colors.green,borderRadius: BorderRadius.circular(6)),
+            decoration: BoxDecoration(color: Colors.black87,borderRadius: BorderRadius.circular(6)),
             child: Center(child: Text("Submit",style: TextStyle(color: Colors.white,fontSize: 18,fontWeight: FontWeight.w500),)),),
             h(30),
           ],
