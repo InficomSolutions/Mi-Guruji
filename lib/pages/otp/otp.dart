@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:techno_teacher/pages/new_password/new_password.dart';
 import 'package:techno_teacher/utils/extension.dart';
 import 'package:techno_teacher/widgets/button.dart';
@@ -11,13 +13,16 @@ import '../../widgets/sizedbox.dart';
 import '../login/login.dart';
 
 class OTP extends StatefulWidget {
-  const OTP({Key? key}) : super(key: key);
+  var verify;
+  var mobilenum;
+  OTP({Key? key, this.mobilenum, this.verify}) : super(key: key);
 
   @override
   State<OTP> createState() => _OTPState();
 }
 
 class _OTPState extends State<OTP> {
+  final FirebaseAuth auth = FirebaseAuth.instance;
   TextEditingController contact = TextEditingController();
   List<TextEditingController> codes =
       List.generate(6, (index) => TextEditingController());
@@ -96,8 +101,28 @@ class _OTPState extends State<OTP> {
                     ),
                     h(30),
                     CustomButton(
-                      onPressed: () {
-                        toScreen(context, const NewPassword());
+                      onPressed: () async {
+                        var value = "";
+                        for (TextEditingController i in codes) {
+                          value = value + i.text;
+                        }
+
+                        print(value);
+                        try {
+                          PhoneAuthCredential credential =
+                              PhoneAuthProvider.credential(
+                                  verificationId: widget.verify,
+                                  smsCode: value);
+                          UserCredential userCredential =
+                              await auth.signInWithCredential(credential);
+                          toScreen(
+                              context,
+                              NewPassword(
+                                mobilenum: widget.mobilenum,
+                              ));
+                        } catch (e) {
+                          Fluttertoast.showToast(msg: 'Wrong otp');
+                        }
                       },
                       text: 'Verify',
                       fgColor: Colors.white,

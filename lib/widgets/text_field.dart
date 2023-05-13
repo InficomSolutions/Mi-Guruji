@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:techno_teacher/utils/extension.dart';
 
 class CustomTextField extends StatelessWidget {
+  bool? enable;
   final TextEditingController controller;
   final String? labelText;
   final Color? bgColor;
@@ -12,8 +13,10 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
   final TextInputType? keyboardType;
   final bool obscureText;
-  const CustomTextField({
+  var onchange;
+  CustomTextField({
     Key? key,
+    this.enable,
     required this.controller,
     this.bgColor,
     this.suffix,
@@ -23,6 +26,7 @@ class CustomTextField extends StatelessWidget {
     this.labelText,
     this.keyboardType,
     this.maxLength,
+    this.onchange,
   }) : super(key: key);
 
   @override
@@ -31,12 +35,14 @@ class CustomTextField extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       elevation: 2.5,
       child: TextFormField(
+        onChanged: onchange,
         validator: validator,
         cursorColor: Colors.black,
         obscureText: obscureText,
         controller: controller,
         keyboardType: keyboardType,
         inputFormatters: [LengthLimitingTextInputFormatter(maxLength)],
+        enabled: enable,
         decoration: InputDecoration(
           filled: true,
           fillColor: '#F7F8F9'.toColor(),

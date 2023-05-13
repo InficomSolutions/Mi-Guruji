@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:techno_teacher/pages/otp/otp.dart';
 import 'package:techno_teacher/utils/extension.dart';
 import 'package:techno_teacher/widgets/button.dart';
@@ -19,6 +21,31 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController contact = TextEditingController();
+  bool progress = false;
+
+  sendotp() async {
+    setState(() {
+      progress = true;
+    });
+    FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: '+91${contact.text}',
+      verificationCompleted: (phoneAuthCredential) {},
+      verificationFailed: (error) {
+        Fluttertoast.showToast(msg: '$error');
+      },
+      codeSent: (verificationId, forceResendingToken) {
+        toScreen(
+            context,
+            OTP(
+              verify: verificationId,
+              mobilenum: contact.text,
+            ));
+      },
+      codeAutoRetrievalTimeout: (verificationId) {},
+    );
+  }
+
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +55,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: SizedBox(
             height: MediaQuery.of(context).size.height - kToolbarHeight,
             child: Form(
+              key: formkey,
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
@@ -50,19 +78,31 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     h(40),
                     CustomTextField(
                       controller: contact,
-                      labelText: 'Enter your Contact No.',
+                      onchange: (value) {
+                        formkey.currentState!.validate();
+                      },
+                      validator: (p0) {
+                        if (p0!.length != 10) {
+                          return "मोबाईल नंबर चुकीचा आहे.";
+                        }
+                      },
+                      labelText: 'मोबाईल नंबर',
                       keyboardType: TextInputType.number,
                     ),
                     h(30),
-                    CustomButton(
-                      onPressed: () {
-                        toScreen(context, const OTP());
-                      },
-                      text: 'Send Code',
-                      fgColor: Colors.white,
-                      bgColor: Colors.black,
-                      fullWidth: true,
-                    ),
+                    progress == true
+                        ? CircularProgressIndicator()
+                        : CustomButton(
+                            onPressed: () {
+                              if (formkey.currentState!.validate()) {
+                                sendotp();
+                              }
+                            },
+                            text: 'Send Code',
+                            fgColor: Colors.white,
+                            bgColor: Colors.black,
+                            fullWidth: true,
+                          ),
                     const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

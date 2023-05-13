@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "74846921820",
+    "project_id": "mi-guruji",
+    "storage_bucket": "mi-guruji.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74846921820:android:b97aa692682fd5e638f299",
+        "android_client_info": {
+          "package_name": "com.inficom.techno_teacher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74846921820-at6qkqcn0uhk7eg7mqe65bdkulbrng1u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inficom.techno_teacher",
+            "certificate_hash": "a556411f7045cd0ff837a85345566b820fd2b8d1"
+          }
+        },
+        {
+          "client_id": "74846921820-4qkbcr41osehjce6gqloebfimo0i74sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWpTXZJK38ElH5C1EGIzEw78L0fHcV3eI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74846921820-4qkbcr41osehjce6gqloebfimo0i74sd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

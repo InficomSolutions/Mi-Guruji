@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:techno_teacher/colors.dart';
 
 import '../../getx_controller/teacher_info_controller/teacher_controller.dart';
 import '../../widgets/custom_textfield.dart';
@@ -15,6 +16,7 @@ class TeacherInfo extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: blackcolor,
         elevation: 0.7,
         centerTitle: true,
         title: const Text(
@@ -155,9 +157,10 @@ class TeacherInfo extends StatelessWidget {
               inputAction: TextInputAction.done,
             ),
             h(20),
-            InkWell(onTap: (){
-              _teacherInfoController.checkValidation();
-            },
+            InkWell(
+              onTap: () {
+                _teacherInfoController.checkValidation();
+              },
               child: Container(
                 height: 50,
                 margin: EdgeInsets.symmetric(horizontal: 14),

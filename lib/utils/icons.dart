@@ -5,4 +5,5 @@ class AppIcons {
   static String plan = "${_basePath}plan.svg";
   static String help = "${_basePath}help.svg";
   static String logout = "${_basePath}logout.svg";
+  static String refer = "${_basePath}network.png";
 }

@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:techno_teacher/api_utility/cont_urls.dart';
+import 'package:techno_teacher/authcontroller.dart';
+import 'package:techno_teacher/colors.dart';
 import 'package:techno_teacher/getx_controller/student_info_controller/student_contorller.dart';
+import 'package:techno_teacher/pages/homepage/help.dart';
 import 'package:techno_teacher/pages/homepage/letterpad_view.dart';
+import 'package:techno_teacher/pages/homepage/plans_page.dart';
+import 'package:techno_teacher/pages/homepage/wallet_page.dart';
 import 'package:techno_teacher/pages/login/login.dart';
 import 'package:techno_teacher/pages/my_school/School_registration.dart';
 import 'package:techno_teacher/pages/profile/my_profile.dart';
@@ -12,6 +18,7 @@ import 'package:techno_teacher/utils/extension.dart';
 import 'package:techno_teacher/utils/icons.dart';
 import 'package:techno_teacher/utils/navigation.dart';
 import 'package:techno_teacher/utils/text_styles.dart';
+import 'package:techno_teacher/widgets/referpage.dart';
 import 'package:techno_teacher/widgets/sizedbox.dart';
 
 import '../utils/images.dart';
@@ -24,7 +31,6 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-
   final StudentController _controller = Get.put(StudentController());
   @override
   Widget build(BuildContext context) {
@@ -34,57 +40,82 @@ class _CustomDrawerState extends State<CustomDrawer> {
         children: [
           h(40),
           CircleAvatar(
-            backgroundImage: Image.asset(Images.profile).image,
+            backgroundImage: userdata['user_details']["profile_img"] != null
+                ? NetworkImage(
+                    "${TGuruJiUrl.url}${userdata['user_details']["profile_img"]}")
+                : Image.asset(
+                    Images.profile,
+                    fit: BoxFit.contain,
+                  ).image,
             radius: 50,
           ),
           h(20),
           Center(
             child: Text(
-              '0030502215',
+              '${userdata['user_details']['name']}',
               style: bold(16),
             ),
           ),
           h(20),
-          Row(
-            children: [
-              Text(
-                'Wallet',
-                style: bold(17),
+          InkWell(
+            onTap: () {
+              Get.to(Walletpage())!.then((value) {
+                setState(() {});
+              });
+            },
+            child: Container(
+              color: greencolor,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'गुरुजी पाकीट',
+                      style: bold(17, whitecolor),
+                    ),
+                    const Spacer(),
+                    Text(
+                      usertotal ?? "0",
+                      style: bold(15, whitecolor),
+                    ),
+                  ],
+                ),
               ),
-              const Spacer(),
-              Text(
-                '1000',
-                style: bold(15),
-              ),
-            ],
+            ),
           ),
+          // h(10),
+          // Row(
+          //   children: [
+          //     Text(
+          //       'शिल्लक रक्कम',
+          //       style: bold(17, bluecolor),
+          //     ),
+          //     const Spacer(),
+          //     Text(
+          //       '800',
+          //       style: bold(15, bluecolor),
+          //     ),
+          //   ],
+          // ),
           h(10),
-          Row(
-            children: [
-              Text(
-                'Balance',
-                style: bold(17),
+          Container(
+            color: redcolor,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    'डाऊनलोड',
+                    style: bold(17, whitecolor),
+                  ),
+                  const Spacer(),
+                  Text(
+                    userdownloads ?? "0",
+                    style: bold(15, whitecolor),
+                  ),
+                ],
               ),
-              const Spacer(),
-              Text(
-                '800',
-                style: bold(15),
-              ),
-            ],
-          ),
-          h(10),
-          Row(
-            children: [
-              Text(
-                'Downloads',
-                style: bold(17),
-              ),
-              const Spacer(),
-              Text(
-                '9999',
-                style: bold(15),
-              ),
-            ],
+            ),
           ),
           h(10),
           const Divider(
@@ -94,7 +125,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           h(20),
           InkWell(
             onTap: () {
-              toScreen(context, MyProfile());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyProfile(),
+                  )).then((value) {
+                setState(() {});
+              });
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -111,7 +148,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   width: 15,
                 ),
                 Text(
-                  "My Profile",
+                  "माझी प्रोफाईल",
                   style: bold(16, '#A80D37'.toColor()),
                 ),
               ],
@@ -121,7 +158,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           h(10),
           InkWell(
             onTap: () {
-              toScreen(context, SchoolRegistration());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SchoolRegistration(),
+                  )).then((value) {
+                setState(() {});
+              });
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -138,17 +181,50 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   width: 15,
                 ),
                 Text(
-                  "My School",
+                  "माझी शाळा",
                   style: bold(16, '#A80D37'.toColor()),
                 ),
               ],
             ),
           ),
+          // h(20),
+          // h(10),
+          // InkWell(
+          //   onTap: () {
+          //     Get.to(() => StudentInfo());
+          //   },
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.start,
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     children: [
+          //       SizedBox(
+          //         height: 20,
+          //         width: 30,
+          //         child: SvgPicture.asset(
+          //           AppIcons.profile,
+          //         ),
+          //       ),
+          //       const SizedBox(
+          //         width: 15,
+          //       ),
+          //       Text(
+          //         "Student Info",
+          //         style: bold(16, '#A80D37'.toColor()),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           h(20),
           h(10),
           InkWell(
             onTap: () {
-              Get.to(() => StudentInfo());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TeacherInfo(),
+                  )).then((value) {
+                setState(() {});
+              });
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -165,7 +241,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   width: 15,
                 ),
                 Text(
-                  "Student Info",
+                  "शिक्षकाची माहिती",
                   style: bold(16, '#A80D37'.toColor()),
                 ),
               ],
@@ -175,7 +251,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
           h(10),
           InkWell(
             onTap: () {
-              Get.to(() => TeacherInfo());
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RefferalPage(),
+                  )).then((value) {
+                setState(() {});
+              });
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -184,15 +266,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 SizedBox(
                   height: 20,
                   width: 30,
-                  child: SvgPicture.asset(
-                    AppIcons.profile,
+                  child: Image.asset(
+                    AppIcons.refer,
+                    color: '#A80D37'.toColor(),
                   ),
                 ),
                 const SizedBox(
                   width: 15,
                 ),
                 Text(
-                  "Teacher Info",
+                  "रेफर",
                   style: bold(16, '#A80D37'.toColor()),
                 ),
               ],
@@ -200,10 +283,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           h(20),
           h(10),
-          InkWell(onTap: (){
-            _controller.letterPad();
-            Get.to(()=>LetterPadView());
-          },
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Planspage(),
+                  )).then((value) {
+                setState(() {});
+              });
+            },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -219,7 +308,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   width: 15,
                 ),
                 Text(
-                  "My Plans",
+                  "प्लॅन",
                   style: bold(16, '#A80D37'.toColor()),
                 ),
               ],
@@ -227,32 +316,44 @@ class _CustomDrawerState extends State<CustomDrawer> {
           ),
           h(20),
           h(10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 20,
-                width: 30,
-                child: SvgPicture.asset(
-                  AppIcons.help,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Help(),
+                  )).then((value) {
+                setState(() {});
+              });
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 20,
+                  width: 30,
+                  child: SvgPicture.asset(
+                    AppIcons.help,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 15,
-              ),
-              Text(
-                "Help",
-                style: bold(16, '#A80D37'.toColor()),
-              ),
-            ],
+                const SizedBox(
+                  width: 15,
+                ),
+                Text(
+                  "मदत",
+                  style: bold(16, '#A80D37'.toColor()),
+                ),
+              ],
+            ),
           ),
           h(20),
           h(10),
           InkWell(
             onTap: () {
+              Authcontroller().deleteToken();
+              Authcontroller().deletedate();
               removeScreens(context, const LoginPage());
-              return;
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -269,7 +370,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   width: 15,
                 ),
                 Text(
-                  "Logout",
+                  "बाहेर पडा",
                   style: bold(16, '#A80D37'.toColor()),
                 ),
               ],
@@ -318,6 +419,7 @@ class DrawerItem extends StatelessWidget {
       onTap: () {
         if (logout) {
           removeScreens(context, const LoginPage());
+
           return;
         }
 

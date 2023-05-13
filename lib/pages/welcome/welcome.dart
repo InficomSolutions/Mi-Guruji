@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:techno_teacher/pages/homepage/homepage.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:techno_teacher/pages/login/login.dart';
 import 'package:techno_teacher/pages/register/register.dart';
 import 'package:techno_teacher/utils/images.dart';
@@ -16,6 +16,20 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkpermission();
+  }
+
+  checkpermission() async {
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -31,7 +45,7 @@ class _WelcomePageState extends State<WelcomePage> {
                   onPressed: () {
                     toScreen(context, const LoginPage());
                   },
-                  text: 'Login',
+                  text: 'लॉगीन करा',
                   fullWidth: true,
                   bgColor: Colors.black,
                   fgColor: Colors.white,
@@ -41,26 +55,27 @@ class _WelcomePageState extends State<WelcomePage> {
                   onPressed: () {
                     toScreen(context, RegisterPage());
                   },
-                  text: 'Register',
+                  text: 'आपले खाते बनवा',
                   fullWidth: true,
-                  borderColor: Colors.black,
+                  bgColor: Colors.black,
+                  fgColor: Colors.white,
                 ),
               ],
             ),
-            InkWell(
-              onTap: () {
-                replaceScreen(context, const Homepage());
-              },
-              child: const Text(
-                'Continue as a guest',
-                style: TextStyle(
-                  color: Color.fromRGBO(53, 194, 193, 1),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            )
+            // InkWell(
+            //   onTap: () {
+            //     replaceScreen(context, const Homepage());
+            //   },
+            //   child: const Text(
+            //     'Continue as a guest',
+            //     style: TextStyle(
+            //       color: Color.fromRGBO(53, 194, 193, 1),
+            //       fontWeight: FontWeight.bold,
+            //       fontSize: 15,
+            //       decoration: TextDecoration.underline,
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),

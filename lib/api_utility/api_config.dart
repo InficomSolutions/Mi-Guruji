@@ -1,27 +1,25 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:techno_teacher/authcontroller.dart';
 import 'package:techno_teacher/getx_controller/auth/sign_up_controller.dart';
 import 'package:techno_teacher/getx_controller/teacher_info_controller/teacher_controller.dart';
-import 'package:techno_teacher/mode_data/auth/signup_model.dart';
 import '../getx_controller/student_info_controller/student_contorller.dart';
-import '../mode_data/letterpad/laterPadModel.dart';
-import '../mode_data/school_model/books_response.dart';
 import '../utils/snackbar/custom_snsckbar.dart';
 import 'cont_urls.dart';
 
 class APiProvider extends GetConnect {
-
   registration() async {
     SignUpController _schoolController = Get.put(SignUpController());
     var body = {
+      "first_name": _schoolController.userName.value.text,
+      "last_name": _schoolController.lastuserName.value.text,
+      "referal_code": _schoolController.referal.value.text,
       "mobile": _schoolController.contact.value.text,
-      "email": _schoolController.userName.value.text,
       "password": _schoolController.password.value.text,
     };
-    debugPrint("=======res ${body}");
     try {
       Get.dialog(const Center(
         child: CircularProgressIndicator(),
@@ -31,24 +29,32 @@ class APiProvider extends GetConnect {
         body,
       );
       debugPrint("=======res ${response.statusCode}");
+      var res = jsonDecode(json.encode(response.body));
       if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: res['response']['response_message']);
         Get.back();
-        SignUpModel model = SignUpModel.fromJson(response.body);
-        ShowCustomSnackBar().SuccessSnackBar(model.response.responseMessage);
-        return model;
+        Get.back();
+        _schoolController.contact.value.clear();
+        _schoolController.userName.value.clear();
+        _schoolController.password.value.clear();
+        _schoolController.cPassword.value.clear();
+        _schoolController.referal.value.clear();
+        Authcontroller().storerefferal("");
+        _schoolController.lastuserName.value.clear();
       } else {
+        Fluttertoast.showToast(msg: res['response']['response_message']);
         Get.back();
-        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
       }
     } catch (e) {
+      print(e.toString() + "fasf");
+      ShowCustomSnackBar().ErrorSnackBar("Try After Some Time");
       Get.back();
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
     }
   }
 
   registrationSchool() async {
     SignUpController _schoolController = Get.put(SignUpController());
-    var token = "210Xag2Pb6U7qTiB";
+    var token = await Authcontroller().getToken();
     var body = {
       "school_name": _schoolController.schoolName.value.text,
       "mobile": _schoolController.mobileNumber.value.text,
@@ -58,7 +64,6 @@ class APiProvider extends GetConnect {
       "udais_no": _schoolController.udaisNo.value.text,
       "index_no": _schoolController.index.value.text
     };
-    debugPrint("=======res ${body}");
     try {
       Get.dialog(const Center(
         child: CircularProgressIndicator(),
@@ -71,6 +76,7 @@ class APiProvider extends GetConnect {
       });
       debugPrint("=======res ${response.statusCode}");
       Get.back();
+      var res = jsonDecode(response.body);
       if (response.statusCode == 200) {
         var data = response.body["response"];
         var msg = data["response_message"];
@@ -82,20 +88,27 @@ class APiProvider extends GetConnect {
     } catch (e) {
       Get.back();
       debugPrint("=============   ${e.toString()}");
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
+      //ShowCustomSnackBar().ErrorSnackBar("error");
+      print(e.toString);
     }
   }
 
   studentInfo() async {
     StudentController _contorller = Get.put(StudentController());
-    var token = "210Xag2Pb6U7qTiB";
+    var token = await Authcontroller().getToken();
     var body = {
       "school_name": _contorller.schoolName.value.text,
+      "class": _contorller.studentclass.value.text,
+      "ifsc_code": _contorller.ifsc.value.text,
+      "mobile_num": _contorller.mobilenumber.value.text,
+      "student_name": _contorller.name.value.text,
+      "mother_name": _contorller.mothername.value.text,
+      "cast": _contorller.cast.value.text,
       "student_id": _contorller.studentID.value.text,
       "dob": _contorller.dob.value.text,
       "adhar_no": _contorller.adhaar.value.text,
       "parent_income": _contorller.parentIncome.value.text,
-      "downloads": _contorller.downloads.value.text,
+      "downloads": "0",
       "handicap_type": _contorller.handicapType.value.text,
       "bank_account_num": _contorller.bankAccount.value.text,
       "minority": _contorller.minority.value.text,
@@ -112,28 +125,41 @@ class APiProvider extends GetConnect {
             'Accept': 'application/json',
             'token': "$token",
           });
-      debugPrint("=======statusCode ${response.statusCode}");
-      debugPrint("=======statusCode ${response.body}");
       Get.back();
       var res = jsonDecode(response.body);
       if (response.statusCode == 200) {
-        var data = res["response"];
-        var msg = data["response_message"];
-        debugPrint("=======msg ${msg}");
-        return msg;
+        Get.back();
+        Get.back();
+        _contorller.adhaar.value.clear();
+        _contorller.schoolName.value.clear();
+        _contorller.studentclass.value.clear();
+        _contorller.mobilenumber.value.clear();
+        _contorller.ifsc.value.clear();
+        _contorller.bankAccount.value.clear();
+        _contorller.name.value.clear();
+        _contorller.schoolName.value.clear();
+        _contorller.cast.value.clear();
+        _contorller.dob.value.clear();
+        _contorller.downloads.value.clear();
+        _contorller.minority.value.clear();
+        _contorller.mothername.value.clear();
+        _contorller.studentID.value.clear();
+        _contorller.parentIncome.value.clear();
+        _contorller.handicapType.value.clear();
       } else {
         ShowCustomSnackBar().ErrorSnackBar(res["message"]);
       }
     } catch (e) {
       Get.back();
       debugPrint("=============   ${e.toString()}");
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
+      //ShowCustomSnackBar().ErrorSnackBar("error");
+      print(e.toString);
     }
   }
 
   teacherInfo() async {
     TeacherInfoController _contorller = Get.put(TeacherInfoController());
-    var token = "210Xag2Pb6U7qTiB";
+    var token = await Authcontroller().getToken();
     var body = {
       "school_name": _contorller.schoolName.value.text,
       "shalarth_id": _contorller.teacherID.value.text,
@@ -180,50 +206,8 @@ class APiProvider extends GetConnect {
     } catch (e) {
       Get.back();
       debugPrint("=============sdsdsahdasd   ${e.toString()}");
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
+      //ShowCustomSnackBar().ErrorSnackBar("error");
+      print(e.toString);
     }
-  }
-
-  letterPad() async{
-    var token = "210Xag2Pb6U7qTiB";
-    try {
-      var response = await get(
-        TGuruJiUrl.laterPad, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'token': "$token",
-      });
-      debugPrint("=======res ${response.statusCode}");
-      if (response.statusCode == 200) {
-        LaterPadModel model = LaterPadModel.fromJson(response.body);
-        return model.data;
-      } else {
-        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
-      }
-    } catch (e) {
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
-    }
-  }
-
-  myBooks() async{
-    var token = "210Xag2Pb6U7qTiB";
-    try {
-      var response = await get(
-          TGuruJiUrl.booklist, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'token': "$token",
-      });
-      debugPrint("=======res ${response.statusCode}");
-      if (response.statusCode == 200) {
-        BookModel model = BookModel.fromJson(response.body);
-        return model.data;
-      } else {
-        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
-      }
-    } catch (e) {
-      ShowCustomSnackBar().ErrorSnackBar(e.toString());
-    }
-
   }
 }

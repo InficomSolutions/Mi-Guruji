@@ -19,25 +19,23 @@ class Images {
   ];
 
   static List data = [
-
-    ["${basePath}book.png","वर्गनिहाय पुस्तकें"],
-    ["${basePath}doubt.png","शंका समाधान"],
-    ["${basePath}form.png","विविध फॉर्म"],
-    ["${basePath}result.png","निकाल"],
-    ["${basePath}seva.png","सेवाजेष्ठता यादी"],
-    ["${basePath}sport.png","विविध खेल नियमावली"],
-    ["${basePath}studant.png","वर्ग निहाय विद्यार्थी यादी"],
-    ["${basePath}technostar.png","तकनीकी शिक्षक"],
-    ["${basePath}timetable.png","समय सारणी"],
-    ["${basePath}update.png","अपडेट"],
-    ["${basePath}vividh.png","विविध समित्य"],
-    ["${basePath}school-info.png","वर्गनिहाय परीक्षा माहिली"],
-    ["${basePath}my-school.png","माझी शाला"],
-    ["${basePath}gov-gr.png","विविध शासाकी परित्रके"],
-    ["${basePath}question.png","वर्ग निहाय प्रश्नपत्रिका"],
-    ["${basePath}poshan.png","पोषण आहार"],
-    ["${basePath}month.png","या महिन्यातील कामे"],
-    ["${basePath}edu-books.png","परिपाठ"],
-
+    ["${basePath}my-school.png", "माझी शाला"],
+    ["${basePath}edu-books.png", "परिपाठ"],
+    ["${basePath}seva.png", "सेवाजेष्ठता यादी"],
+    ["${basePath}studant.png", "वर्ग निहाय विद्यार्थी यादी"],
+    ["${basePath}timetable.png", "समय सारणी"],
+    ["${basePath}vividh.png", "विविध समित्य"],
+    ["${basePath}book.png", "वर्गनिहाय पुस्तकें"],
+    ["${basePath}sport.png", "विविध खेल नियमावली"],
+    ["${basePath}month.png", "या महिन्यातील कामे"],
+    ["${basePath}question.png", "वर्ग निहाय प्रश्नपत्रिका"],
+    ["${basePath}gov-gr.png", "विविध शासाकी परित्रके"],
+    ["${basePath}school-info.png", "वर्गनिहाय परीक्षा माहिली"],
+    ["${basePath}doubt.png", "शंका समाधान"],
+    ["${basePath}form.png", "विविध फॉर्म"],
+    ["${basePath}poshan.png", "पोषण आहार"],
+    ["${basePath}technostar.png", "तकनीकी शिक्षक"],
+    ["${basePath}result.png", "निकाल"],
+    ["${basePath}update.png", "अपडेट"],
   ];
 }
