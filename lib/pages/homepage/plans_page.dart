@@ -62,10 +62,11 @@ class _PlanspageState extends State<Planspage> {
 
   getsubcribevalue() async {
     var token = await Authcontroller().getToken();
-    var data = await subcribedplans("${token ?? widget.token}");
+    List data = await subcribedplans("${token ?? widget.token}");
     setState(() {
       subscribeddata = data;
     });
+    print(data);
     if (data.isNotEmpty) {
       checkdata();
     }
@@ -184,7 +185,7 @@ class _PlanspageState extends State<Planspage> {
             )
           : ListView(
               children: [
-                availableid == null
+                availableid == null && subscribeddata.isNotEmpty
                     ? Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
