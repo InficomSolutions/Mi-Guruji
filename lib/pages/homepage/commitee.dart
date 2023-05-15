@@ -134,7 +134,7 @@ class _CommiteeState extends State<Commitee> {
                                 "${TGuruJiUrl.url}/${commiteedata[index]['pdf']}",
                                 title);
                           } else {
-                            if (double.parse(usertotal) >=
+                            if (double.parse(usertotal ?? 0) >=
                                 double.parse(
                                     "${commiteedata[index]['rate'] ?? 0.00}")) {
                               showDialog(

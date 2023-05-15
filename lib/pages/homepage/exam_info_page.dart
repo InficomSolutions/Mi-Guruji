@@ -138,7 +138,7 @@ class _ExaminfoState extends State<Examinfo> {
                                 "${TGuruJiUrl.url}/${getexamdata[index]['exam_form']}",
                                 title);
                           } else {
-                            if (double.parse(usertotal) >=
+                            if (double.parse(usertotal ?? 0) >=
                                 double.parse(
                                     "${getexamdata[index]['rate'] ?? 0.00}")) {
                               showDialog(

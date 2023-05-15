@@ -164,7 +164,7 @@ class _GovermentcircularState extends State<Govermentcircular> {
                                         "${TGuruJiUrl.url}/${govermentcirculardata[index]['pdf']}",
                                         title);
                                   } else {
-                                    if (double.parse(usertotal) >=
+                                    if (double.parse(usertotal ?? 0) >=
                                         double.parse(
                                             "${govermentcirculardata[index]['rate'] ?? 0.00}")) {
                                       showDialog(

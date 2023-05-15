@@ -23,9 +23,9 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   checkpermission() async {
-    var status = await Permission.storage.status;
+    var status = await Permission.manageExternalStorage.status;
     if (!status.isGranted) {
-      await Permission.storage.request();
+      await Permission.manageExternalStorage.request();
     }
   }
 

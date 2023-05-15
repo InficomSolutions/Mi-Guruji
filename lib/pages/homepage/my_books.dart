@@ -331,7 +331,7 @@ class _MyBooksState extends State<MyBooks> {
                                       "${TGuruJiUrl.url}/${activelist[index]['link']}",
                                       title);
                                 } else {
-                                  if (double.parse(usertotal) >=
+                                  if (double.parse(usertotal ?? 0) >=
                                       double.parse(
                                           "${activelist[index]['rate'] ?? 0.00}")) {
                                     showDialog(

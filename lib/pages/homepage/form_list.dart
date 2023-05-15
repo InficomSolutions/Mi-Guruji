@@ -122,7 +122,7 @@ class _FormlistpageState extends State<Formlistpage> {
                               "${TGuruJiUrl.url}/${formdata[index]['pdf']}",
                               title);
                         } else {
-                          if (double.parse(usertotal) >=
+                          if (double.parse(usertotal ?? 0 ?? 0) >=
                               double.parse(
                                   "${formdata[index]['rate'] ?? 0.00}")) {
                             showDialog(
