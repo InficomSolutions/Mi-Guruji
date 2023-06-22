@@ -54,6 +54,8 @@ class _SenioritypageState extends State<Senioritypage> {
     getsinoritydata();
   }
 
+  bool progress = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,29 +96,40 @@ class _SenioritypageState extends State<Senioritypage> {
             //     style: TextStyle(color: blackcolor, fontSize: 30),
             //   ),
             // ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () {
-                  // _createpdf();
-                  createpdf();
-                },
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                      color: bluecolor,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: blackcolor)
-                      // gradient: LinearGradient(
-                      //     colors: [Colors.deepOrange, Colors.yellow])
+            progress == true
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          progress = true;
+                        });
+                        // _createpdf();
+                        createpdf().then((value) {
+                          setState(() {
+                            progress = false;
+                          });
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: bluecolor,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: blackcolor)
+                            // gradient: LinearGradient(
+                            //     colors: [Colors.deepOrange, Colors.yellow])
+                            ),
+                        child: Text(
+                          'डाऊनलोड करा',
+                          style: TextStyle(fontSize: 25, color: whitecolor),
+                        ),
                       ),
-                  child: Text(
-                    'डाऊनलोड करा',
-                    style: TextStyle(fontSize: 25, color: whitecolor),
+                    ),
                   ),
-                ),
-              ),
-            ),
             Divider(
               color: blackcolor,
             ),
@@ -254,6 +267,9 @@ class _SenioritypageState extends State<Senioritypage> {
       },
     ));
     List<int> bytes = await pdf.save();
-    SaveAndLaunchFile(bytes, 'output.pdf', context);
+    SaveAndLaunchFile(
+        bytes,
+        'siniority${DateTime.now().toString().replaceAll(':', '').replaceAll(' ', '').replaceAll('-', '')}.pdf',
+        context);
   }
 }

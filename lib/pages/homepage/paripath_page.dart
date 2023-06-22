@@ -9,6 +9,7 @@ import 'package:techno_teacher/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:techno_teacher/api_utility/cont_urls.dart';
 import 'package:techno_teacher/authcontroller.dart';
+import 'package:techno_teacher/pages/homepage/sizedbox.dart';
 import 'package:techno_teacher/utils/snackbar/custom_snsckbar.dart';
 import 'dart:math' as math;
 
@@ -20,8 +21,10 @@ class Paripathpage extends StatefulWidget {
 }
 
 class _ParipathpageState extends State<Paripathpage> {
-  bool loadcompletetext = false;
+  List<bool> loadcompletetext = [];
   bool todayissunday = false;
+  DateTime today =
+      DateTime.parse(DateFormat("yyyyMMdd").format(DateTime.now()));
 
   getdata() async {
     var token = await Authcontroller().getToken();
@@ -34,13 +37,13 @@ class _ParipathpageState extends State<Paripathpage> {
       debugPrint("=======res ${response.statusCode}");
       var res = jsonDecode(response.body);
       if (response.statusCode == 200) {
+        print(res['data']['debate']);
         setState(() {
-          // paripathdata = res['data'];
           constitustion = res['data']['constitution'];
           rajyagit = res['data']['rajyagit'];
           national = res['data']['national'];
           prayer = res['data']['prayer'];
-          dailyprayer = res['data']['daily_prayer'];
+          dailyprayer = res['data']['daily_prayer'] ?? [];
           debate = res['data']['debate'];
           group = res['data']['group'];
           story = res['data']['story'];
@@ -49,9 +52,19 @@ class _ParipathpageState extends State<Paripathpage> {
         ShowCustomSnackBar().ErrorSnackBar(res['response']["message"]);
       }
     } catch (e) {
-      Fluttertoast.showToast(msg: 'error');
+      print(e);
     }
   }
+
+  var listofparipathat = [
+    national,
+    rajyagit,
+    constitustion,
+    prayer,
+    dailyprayer
+  ];
+
+  var listofparipathaextra = [debate, group, story];
 
   @override
   void initState() {
@@ -67,6 +80,7 @@ class _ParipathpageState extends State<Paripathpage> {
     getdata();
     player = List.generate(500, (index) => AudioPlayer(), growable: false);
     playpause = List.generate(500, (index) => false, growable: false);
+    loadcompletetext = List.generate(500, (index) => false);
   }
 
   @override
@@ -77,10 +91,6 @@ class _ParipathpageState extends State<Paripathpage> {
 
   @override
   Widget build(BuildContext context) {
-    print(constitustion);
-    print(rajyagit);
-    print(national);
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -121,297 +131,142 @@ class _ParipathpageState extends State<Paripathpage> {
                 ),
               )
             : TabBarView(
-                children: [
-                  RefreshIndicator(
-                    color: blackcolor,
-                    onRefresh: () async {
-                      getdata();
-                    },
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListView.builder(
+                children: List.generate(3, (s) {
+                return RefreshIndicator(
+                  color: blackcolor,
+                  onRefresh: () async {
+                    getdata();
+                  },
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: ScrollPhysics(),
+                          itemCount: listofparipathat.length,
+                          itemBuilder: (BuildContext context, int i) {
+                            if (listofparipathat[i].isEmpty) {
+                              return const Center();
+                            } else {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: ScrollPhysics(),
+                                itemCount: listofparipathat[i].length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  var date = listofparipathat[i][index]
+                                              ['date'] ==
+                                          null
+                                      ? DateTime.now()
+                                      : DateTime.parse(
+                                          "${listofparipathat[i][index]['date']}");
+
+                                  var timedifference =
+                                      today.difference(date).inDays;
+
+                                  if (timedifference ==
+                                      (s == 0
+                                          ? 1
+                                          : s == 1
+                                              ? 0
+                                              : -1)) {
+                                    return box(
+                                        ontap: () {
+                                          setState(() {
+                                            loadcompletetext[index] =
+                                                !loadcompletetext[index];
+                                          });
+                                        },
+                                        index: index,
+                                        title:
+                                            "${listofparipathat[i][index]['title']}",
+                                        description:
+                                            "${listofparipathat[i][index]['description']}",
+                                        url:
+                                            "${TGuruJiUrl.url}${listofparipathat[i][index]['audio_file']}",
+                                        color: Color(
+                                                (math.Random().nextDouble() *
+                                                        0xFFFFFF)
+                                                    .toInt())
+                                            .withOpacity(1.0),
+                                        player: player[index],
+                                        playpause: playpause[index]);
+                                  } else {
+                                    return SizedBox.shrink();
+                                  }
+                                },
+                              );
+                            }
+                          },
+                        ),
+                        ListView.builder(
                             shrinkWrap: true,
                             physics: ScrollPhysics(),
-                            itemCount: listofparipathat.length,
+                            itemCount: listofparipathaextra.length,
                             itemBuilder: (BuildContext context, int i) {
-                              if (listofparipathat[i].isEmpty) {
-                                return const Center();
+                              if (listofparipathaextra[i].isEmpty) {
+                                return Center();
                               } else {
                                 return ListView.builder(
                                   shrinkWrap: true,
                                   physics: ScrollPhysics(),
-                                  itemCount: listofparipathat[i].length,
+                                  itemCount: listofparipathaextra[i].length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    var date = listofparipathat[i][index]
+                                    var date = listofparipathaextra[i][index]
                                                 ['date'] ==
                                             null
                                         ? DateTime.now()
                                         : DateTime.parse(
-                                            "${listofparipathat[i][index]['date']}");
-                                    DateTime today = DateTime.now();
+                                            "${listofparipathaextra[i][index]['date']}");
+
                                     var timedifference =
                                         today.difference(date).inDays;
-
-                                    if (timedifference == 1) {
-                                      return box(
-                                          title:
-                                              "${listofparipathat[i][index]['title']}",
-                                          description:
-                                              "${listofparipathat[i][index]['description']}",
+                                    if (timedifference ==
+                                        (s == 0
+                                            ? 1
+                                            : s == 1
+                                                ? 0
+                                                : -1)) {
+                                      return extrabox(
+                                          ontap: () {
+                                            setState(() {
+                                              loadcompletetext[index] =
+                                                  !loadcompletetext[index];
+                                            });
+                                          },
+                                          i: i,
+                                          index: index,
+                                          player: player[index],
+                                          playpause: playpause[index],
                                           url:
-                                              "${TGuruJiUrl.url}/${listofparipathat[i][index]['audio_file']}",
+                                              "${TGuruJiUrl.url}${listofparipathaextra[i][index]['audio_file']}",
+                                          title:
+                                              "${listofparipathaextra[i][index]['title']}",
+                                          ques:
+                                              "${listofparipathaextra[i][index]['ques']}",
+                                          ans:
+                                              "${listofparipathaextra[i][index]['ans']}",
+                                          clas:
+                                              "${listofparipathaextra[i][index]['class']}",
+                                          description:
+                                              "${listofparipathaextra[i][index]['description']}",
                                           color: Color(
                                                   (math.Random().nextDouble() *
                                                           0xFFFFFF)
                                                       .toInt())
-                                              .withOpacity(1.0),
-                                          player: player[index],
-                                          playpause: playpause[index]);
+                                              .withOpacity(1.0));
                                     } else {
                                       return SizedBox.shrink();
                                     }
                                   },
                                 );
                               }
-                            },
-                          ),
-                          ListView.builder(
-                              shrinkWrap: true,
-                              physics: ScrollPhysics(),
-                              itemCount: listofparipathaextra.length,
-                              itemBuilder: (BuildContext context, int i) {
-                                if (listofparipathat[i].isEmpty) {
-                                  return Center();
-                                } else {
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: ScrollPhysics(),
-                                    itemCount: listofparipathaextra[i].length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      var date = listofparipathat[i][index]
-                                                  ['date'] ==
-                                              null
-                                          ? DateTime.now()
-                                          : DateTime.parse(
-                                              "${listofparipathaextra[i][index]['date']}");
-                                      DateTime today = DateTime.now();
-                                      var timedifference =
-                                          today.difference(date).inDays;
-
-                                      if (timedifference == 1) {
-                                        return extrabox(
-                                            title:
-                                                "${listofparipathaextra[i][index]['title']}",
-                                            description:
-                                                "${listofparipathaextra[i][index]['description']}",
-                                            color: Color((math.Random()
-                                                            .nextDouble() *
-                                                        0xFFFFFF)
-                                                    .toInt())
-                                                .withOpacity(1.0));
-                                      } else {
-                                        return SizedBox.shrink();
-                                      }
-                                    },
-                                  );
-                                }
-                              }),
-                        ],
-                      ),
+                            }),
+                      ],
                     ),
                   ),
-                  RefreshIndicator(
-                    color: blackcolor,
-                    onRefresh: () async {
-                      getdata();
-                    },
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            itemCount: listofparipathat.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: ScrollPhysics(),
-                                itemCount: listofparipathat[i].length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var date = listofparipathat[i][index]
-                                              ['date'] ==
-                                          null
-                                      ? DateTime.now()
-                                      : DateTime.parse(
-                                          "${listofparipathat[i][index]['date']}");
-
-                                  DateTime today = DateTime.now();
-                                  var timedifference =
-                                      today.difference(date).inDays;
-
-                                  if ("${date.day}-${date.month}-${date.year}" ==
-                                      "${today.day}-${today.month}-${today.year}") {
-                                    return box(
-                                        title:
-                                            "${listofparipathat[i][index]['title']}",
-                                        description:
-                                            "${listofparipathat[i][index]['description']}",
-                                        url:
-                                            "${TGuruJiUrl.url}/${listofparipathat[i][index]['audio_file']}",
-                                        color: Color(
-                                                (math.Random().nextDouble() *
-                                                        0xFFFFFF)
-                                                    .toInt())
-                                            .withOpacity(1.0),
-                                        player: player[index],
-                                        playpause: playpause[index]);
-                                  } else {
-                                    return SizedBox.shrink();
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            itemCount: listofparipathaextra.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: ScrollPhysics(),
-                                itemCount: listofparipathaextra[i].length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var date = listofparipathat[i][index]
-                                              ['date'] ==
-                                          null
-                                      ? DateTime.now()
-                                      : DateTime.parse(
-                                          "${listofparipathaextra[i][index]['date']}");
-                                  DateTime today = DateTime.now();
-                                  var timedifference =
-                                      today.difference(date).inDays;
-
-                                  if ("${date.day}-${date.month}-${date.year}" ==
-                                      "${today.day}-${today.month}-${today.year}") {
-                                    return extrabox(
-                                        title:
-                                            "${listofparipathaextra[i][index]['title']}",
-                                        description:
-                                            "${listofparipathaextra[i][index]['description']}",
-                                        color: Color(
-                                                (math.Random().nextDouble() *
-                                                        0xFFFFFF)
-                                                    .toInt())
-                                            .withOpacity(1.0));
-                                  } else {
-                                    return SizedBox.shrink();
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  RefreshIndicator(
-                    color: blackcolor,
-                    onRefresh: () async {
-                      getdata();
-                    },
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            itemCount: listofparipathat.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: ScrollPhysics(),
-                                itemCount: listofparipathat[i].length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var date = listofparipathat[i][index]
-                                              ['date'] ==
-                                          null
-                                      ? DateTime.now()
-                                      : DateTime.parse(
-                                          "${listofparipathat[i][index]['date']}");
-                                  DateTime today = DateTime.now();
-                                  var timedifference =
-                                      today.difference(date).inDays;
-
-                                  if (timedifference == -1) {
-                                    return box(
-                                        title:
-                                            "${listofparipathat[i][index]['title']}",
-                                        description:
-                                            "${listofparipathat[i][index]['description']}",
-                                        url:
-                                            "${TGuruJiUrl.url}/${listofparipathat[i][index]['audio_file']}",
-                                        color: Color(
-                                                (math.Random().nextDouble() *
-                                                        0xFFFFFF)
-                                                    .toInt())
-                                            .withOpacity(1.0),
-                                        player: player[index],
-                                        playpause: playpause[index]);
-                                  } else {
-                                    return SizedBox.shrink();
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            itemCount: listofparipathaextra.length,
-                            itemBuilder: (BuildContext context, int i) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: ScrollPhysics(),
-                                itemCount: listofparipathaextra[i].length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  var date = listofparipathaextra[i][index]
-                                              ['date'] ==
-                                          null
-                                      ? DateTime.now()
-                                      : DateTime.parse(
-                                          "${listofparipathaextra[i][index]['date']}");
-                                  DateTime today = DateTime.now();
-                                  var timedifference =
-                                      today.difference(date).inDays;
-
-                                  if (timedifference == -1) {
-                                    return extrabox(
-                                        title:
-                                            "${listofparipathaextra[i][index]['title']}",
-                                        description:
-                                            "${listofparipathaextra[i][index]['description']}",
-                                        color: Color(
-                                                (math.Random().nextDouble() *
-                                                        0xFFFFFF)
-                                                    .toInt())
-                                            .withOpacity(1.0));
-                                  } else {
-                                    return SizedBox.shrink();
-                                  }
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                );
+              })),
       ),
     );
   }
@@ -421,14 +276,17 @@ class _ParipathpageState extends State<Paripathpage> {
     var description,
     var url,
     var color,
-    var player,
+    AudioPlayer? player,
     var playpause,
+    var ontap,
+    var index,
   }) {
-    var document = parse(loadcompletetext == false
+    var document = parse(loadcompletetext[index] == false
         ? description.substring(
             0, description.length <= 80 ? description.length : 80)
         : description);
-
+    print(player!.position);
+    print(playpause);
     return StatefulBuilder(
       builder: (BuildContext context, setState) {
         return Padding(
@@ -470,24 +328,15 @@ class _ParipathpageState extends State<Paripathpage> {
                       Align(
                         alignment: Alignment.bottomRight,
                         child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              loadcompletetext = !loadcompletetext;
-                            });
-                          },
-                          child: loadcompletetext
-                              ? CircleAvatar(
-                                  backgroundColor: redcolor,
-                                  child: Icon(
-                                    Icons.arrow_drop_up,
-                                    color: whitecolor,
-                                  ))
-                              : CircleAvatar(
-                                  backgroundColor: redcolor,
-                                  child: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: whitecolor,
-                                  )),
+                          onTap: ontap,
+                          child: CircleAvatar(
+                              backgroundColor: redcolor,
+                              child: Icon(
+                                loadcompletetext[index]
+                                    ? Icons.arrow_drop_up
+                                    : Icons.arrow_drop_down,
+                                color: whitecolor,
+                              )),
                         ),
                       )
                     ],
@@ -515,16 +364,24 @@ class _ParipathpageState extends State<Paripathpage> {
                                 child: Icon(Icons.pause))
                             : InkWell(
                                 onTap: () async {
-                                  if (url != "Null") {
+                                  print(player.playerState);
+                                  if ("${player.position}" !=
+                                      "0:00:00.000000") {
+                                    await player.setUrl(
+                                        url ??
+                                            "https://deals2you.store/tu_mera_koi_na.mp3",
+                                        initialPosition: player.position);
+                                    player.play();
+                                    setState(() {
+                                      playpause = true;
+                                    });
+                                  } else {
                                     await player.setUrl(url ??
                                         "https://deals2you.store/tu_mera_koi_na.mp3");
                                     player.play();
                                     setState(() {
                                       playpause = true;
                                     });
-                                  } else if (url == "Null") {
-                                    Fluttertoast.showToast(
-                                        msg: "Audio Not Found");
                                   }
                                 },
                                 child: Icon(Icons.play_arrow)),
@@ -539,7 +396,9 @@ class _ParipathpageState extends State<Paripathpage> {
                                 progress: player.position,
                                 buffered: player.bufferedPosition,
                                 onSeek: (value) {
-                                  player.seek(value);
+                                  setState(() {
+                                    player.seek(value);
+                                  });
                                 },
                                 onDragEnd: () {},
                               );
@@ -562,9 +421,22 @@ class _ParipathpageState extends State<Paripathpage> {
     var title,
     var description,
     var color,
+    var index,
+    var ontap,
+    var player,
+    var playpause,
+    var i,
+    var clas,
+    var ques,
+    var ans,
+    var url,
   }) {
-    var document = parse(
-        loadcompletetext == false ? description.substring(0, 80) : description);
+    var document = i == 0
+        ? null
+        : parse(loadcompletetext[index] == false
+            ? description.substring(
+                0, description.length <= 80 ? description.length : 80)
+            : description);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -597,52 +469,149 @@ class _ParipathpageState extends State<Paripathpage> {
               padding: const EdgeInsets.all(2.0),
               child: Column(
                 children: [
-                  Text(
-                    "${document.body!.text}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: blackcolor, fontSize: 25),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          loadcompletetext = !loadcompletetext;
-                        });
-                      },
-                      child: loadcompletetext
-                          ? CircleAvatar(
-                              backgroundColor: redcolor,
-                              child: Icon(
-                                Icons.arrow_drop_up,
-                                color: whitecolor,
-                              ))
-                          : CircleAvatar(
-                              backgroundColor: redcolor,
-                              child: Icon(
-                                Icons.arrow_drop_down,
-                                color: whitecolor,
-                              )),
-                    ),
-                  )
+                  i == 0
+                      ? Column(
+                          children: [
+                            Text(
+                              "$clas",
+                              textAlign: TextAlign.justify,
+                              style: TextStyle(
+                                  color: blackcolor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "Q.     ",
+                                  style: TextStyle(
+                                      color: blackcolor, fontSize: 20),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "$ques",
+                                    style: TextStyle(
+                                        color: blackcolor, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            h(5),
+                            Row(
+                              children: [
+                                Text(
+                                  "Ans. ",
+                                  style: TextStyle(
+                                      color: blackcolor, fontSize: 20),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    " $ans",
+                                    style: TextStyle(
+                                        color: blackcolor, fontSize: 20),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                      : Text(
+                          "${document!.body!.text}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: blackcolor, fontSize: 25),
+                        ),
+                  i == 0
+                      ? SizedBox.shrink()
+                      : Align(
+                          alignment: Alignment.bottomRight,
+                          child: InkWell(
+                            onTap: ontap,
+                            child: CircleAvatar(
+                                backgroundColor: redcolor,
+                                child: Icon(
+                                  loadcompletetext[index]
+                                      ? Icons.arrow_drop_up
+                                      : Icons.arrow_drop_down,
+                                  color: whitecolor,
+                                )),
+                          ),
+                        )
                 ],
               ),
             ),
+            i == 2
+                ? Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: Color(0xffdfdfdf),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          playpause
+                              ? InkWell(
+                                  onTap: () async {
+                                    player.pause();
+                                    setState(() {
+                                      playpause = false;
+                                    });
+                                  },
+                                  child: Icon(Icons.pause))
+                              : InkWell(
+                                  onTap: () async {
+                                    if ("${player.position}" !=
+                                        "0:00:00.000000") {
+                                      await player.setUrl(
+                                          url ??
+                                              "https://deals2you.store/tu_mera_koi_na.mp3",
+                                          initialPosition: player.position);
+                                      player.play();
+                                      setState(() {
+                                        playpause = true;
+                                      });
+                                    } else {
+                                      await player.setUrl(url ??
+                                          "https://deals2you.store/tu_mera_koi_na.mp3");
+                                      player.play();
+                                      setState(() {
+                                        playpause = true;
+                                      });
+                                    }
+                                  },
+                                  child: Icon(Icons.play_arrow)),
+                          Container(
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            child: StreamBuilder(
+                              stream: player.positionStream,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot snapshot) {
+                                return ProgressBar(
+                                  total: player.duration ?? Duration.zero,
+                                  progress: player.position,
+                                  buffered: player.bufferedPosition,
+                                  onSeek: (value) {
+                                    setState(() {
+                                      player.seek(value);
+                                    });
+                                  },
+                                  onDragEnd: () {},
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
     );
   }
-
-  var listofparipathat = [
-    national,
-    rajyagit,
-    constitustion,
-    prayer,
-    dailyprayer
-  ];
-
-  var listofparipathaextra = [debate, group, story];
 
   var listcolor = [
     Colors.purple,

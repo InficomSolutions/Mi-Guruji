@@ -27,15 +27,18 @@ class _SchoolRegistrationState extends State<SchoolRegistration> {
     if (latterpaddata.isNotEmpty) {
       setState(() {
         _schoolController.schoolName.value.text =
-            latterpaddata[0]['school_name'];
-        _schoolController.mobileNumber.value.text = latterpaddata[0]['mobile'];
-        _schoolController.emailId.value.text = latterpaddata[0]['email'];
-        _schoolController.schoolAddr.value.text = latterpaddata[0]['address'];
+            latterpaddata[0]['school_name'] ?? "";
+        _schoolController.mobileNumber.value.text =
+            latterpaddata[0]['mobile'] ?? "";
+        _schoolController.emailId.value.text = latterpaddata[0]['email'] ?? "";
+        _schoolController.schoolAddr.value.text =
+            latterpaddata[0]['address'] ?? "";
         _schoolController.foundation.value.text =
-            latterpaddata[0]['foundation_year'];
-        _schoolController.index.value.text = latterpaddata[0]['Index_no'];
-        _schoolController.udaisNo.value.text = latterpaddata[0]['udais_no'];
-        _schoolController.ssc.value.text = latterpaddata[0]['center_no'];
+            latterpaddata[0]['foundation_year'] ?? "";
+        _schoolController.index.value.text = latterpaddata[0]['Index_no'] ?? "";
+        _schoolController.udaisNo.value.text =
+            latterpaddata[0]['udais_no'] ?? "";
+        _schoolController.ssc.value.text = latterpaddata[0]['center_no'] ?? "";
       });
     }
   }

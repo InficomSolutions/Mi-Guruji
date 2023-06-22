@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:techno_teacher/api_utility/cont_urls.dart';
 import 'package:techno_teacher/authcontroller.dart';
 import 'package:techno_teacher/colors.dart';
@@ -49,7 +50,6 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   updateuserdata() async {
-    print(path1);
     try {
       var gettoken = await Authcontroller().getToken();
       final request = http.MultipartRequest(
@@ -57,20 +57,19 @@ class _MyProfileState extends State<MyProfile> {
       request.headers.addAll({
         'token': "$gettoken",
       });
+
       if (path1.isNotEmpty) {
         request.files.addAll({
           http.MultipartFile.fromBytes(
               "profile_img", File(path1[0]).readAsBytesSync(),
-              filename: "uploads/profile_img/1669906325user.jpg")
+              filename: "1669906325user.${path1[0].split(".").last}")
         });
       }
 
       request.fields.addAll({
-        "mobile": _myProfileController.mobile.value.text,
-        "password": "${userdata['user_details']['password']}",
-        "name": _myProfileController.name.value.text,
-        "address": _myProfileController.address.value.text,
-        "refer_code": _myProfileController.refercode.value.text,
+        "mobile": "${_myProfileController.mobile.value.text}",
+        "name": "${_myProfileController.name.value.text}",
+        "address": "${_myProfileController.address.value.text}",
       });
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
@@ -78,6 +77,7 @@ class _MyProfileState extends State<MyProfile> {
       var resp = await request.send();
 
       http.Response response = await http.Response.fromStream(resp);
+      print(response.body);
       var res = jsonDecode(response.body);
       if (response.statusCode == 200) {
         getdata();
@@ -213,14 +213,14 @@ class _MyProfileState extends State<MyProfile> {
                     inputAction: TextInputAction.next,
                     enable: editMode,
                   ),
-                  // AppTextField(
-                  //   controller: _myProfileController.address.value,
-                  //   hintText: 'Enter your address',
-                  //   inputType: TextInputType.text,
-                  //   lableText: 'Address',
-                  //   textCapitalization: TextCapitalization.sentences,
-                  //   inputAction: TextInputAction.next,
-                  // ),
+                  AppTextField(
+                    controller: _myProfileController.address.value,
+                    hintText: 'Enter your address',
+                    inputType: TextInputType.text,
+                    lableText: 'Address',
+                    textCapitalization: TextCapitalization.sentences,
+                    inputAction: TextInputAction.next,
+                  ),
                   AppTextField(
                     controller: _myProfileController.mobile.value,
                     hintText: 'मोबाईल नंबर टाका',
@@ -230,7 +230,6 @@ class _MyProfileState extends State<MyProfile> {
                     inputAction: TextInputAction.next,
                     enable: editMode,
                   ),
-
                   AppTextField(
                     controller: _myProfileController.refercode.value,
                     hintText: 'रेफर कोड',

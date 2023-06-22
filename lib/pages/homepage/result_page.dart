@@ -65,6 +65,8 @@ class _ResultpageState extends State<Resultpage> {
     getresultdata();
   }
 
+  bool progress = false;
+  var downloadindex;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,94 +114,118 @@ class _ResultpageState extends State<Resultpage> {
                     allresultdata[index]['name'],
                     textScaleFactor: 1.5,
                   ),
-                  Row(
-                    children: [
-                      DropdownButton(
-                        icon: const Icon(Icons.download),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'first',
-                            child: Text("First"),
-                          ),
-                          DropdownMenuItem(
-                            value: 'second',
-                            child: Text("second"),
-                          )
-                        ],
-                        onChanged: (value) {
-                          if (value == 'second') {
-                            studentdata.clear();
+                  progress == true
+                      ? downloadindex == index
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : SizedBox.shrink()
+                      : Row(
+                          children: [
+                            DropdownButton(
+                              icon: const Icon(Icons.download),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'first',
+                                  child: Text("First"),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'second',
+                                  child: Text("second"),
+                                )
+                              ],
+                              onChanged: (value) {
+                                if (value == 'second') {
+                                  studentdata.clear();
 
-                            for (int i = 0; i < resultdata.length; i++) {
-                              if (resultdata[i]['student_name'] ==
-                                      allresultdata[index]['name'] &&
-                                  resultdata[i]['class'] ==
-                                      allresultdata[index]['class'] &&
-                                  resultdata[i]['roll_no'] ==
-                                      allresultdata[index]['roll_no'] &&
-                                  resultdata[i]['session'] == value) {
-                                setState(() {
-                                  studentdata.add(resultdata[i]);
-                                });
-                              }
-                            }
+                                  for (int i = 0; i < resultdata.length; i++) {
+                                    if (resultdata[i]['student_name'] ==
+                                            allresultdata[index]['name'] &&
+                                        resultdata[i]['class'] ==
+                                            allresultdata[index]['class'] &&
+                                        resultdata[i]['roll_no'] ==
+                                            allresultdata[index]['roll_no'] &&
+                                        resultdata[i]['session'] == value) {
+                                      setState(() {
+                                        studentdata.add(resultdata[i]);
+                                      });
+                                    }
+                                  }
 
-                            createpdf();
-                          } else if (value == 'first') {
-                            studentdata.clear();
+                                  setState(() {
+                                    progress = true;
+                                    downloadindex = index;
+                                  });
+                                  // _createpdf();
+                                  createpdf().then((value) {
+                                    setState(() {
+                                      progress = false;
+                                    });
+                                  });
+                                } else if (value == 'first') {
+                                  studentdata.clear();
 
-                            for (int i = 0; i < resultdata.length; i++) {
-                              if (resultdata[i]['student_name'] ==
-                                      allresultdata[index]['name'] &&
-                                  resultdata[i]['class'] ==
-                                      allresultdata[index]['class'] &&
-                                  resultdata[i]['roll_no'] ==
-                                      allresultdata[index]['roll_no'] &&
-                                  resultdata[i]['session'] == value) {
-                                setState(() {
-                                  studentdata.add(resultdata[i]);
-                                });
-                              }
-                            }
+                                  for (int i = 0; i < resultdata.length; i++) {
+                                    if (resultdata[i]['student_name'] ==
+                                            allresultdata[index]['name'] &&
+                                        resultdata[i]['class'] ==
+                                            allresultdata[index]['class'] &&
+                                        resultdata[i]['roll_no'] ==
+                                            allresultdata[index]['roll_no'] &&
+                                        resultdata[i]['session'] == value) {
+                                      setState(() {
+                                        studentdata.add(resultdata[i]);
+                                      });
+                                    }
+                                  }
 
-                            createpdf();
-                          }
-                        },
-                      ),
-                      DropdownButton(
-                        icon: const Icon(Icons.more_vert),
-                        items: const [
-                          DropdownMenuItem(
-                            value: 'first',
-                            child: Text("First"),
-                          ),
-                          DropdownMenuItem(
-                            value: 'second',
-                            child: Text("second"),
-                          )
-                        ],
-                        onChanged: (value) {
-                          if (value == 'second') {
-                            Get.to(() => Addresult(
-                                      data: allresultdata[index],
-                                      session: value,
-                                    ))!
-                                .then((value) {
-                              getresultdata();
-                            });
-                          } else if (value == 'first') {
-                            Get.to(() => Addresult(
-                                      data: allresultdata[index],
-                                      session: value,
-                                    ))!
-                                .then((value) {
-                              getresultdata();
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                                  setState(() {
+                                    progress = true;
+                                    downloadindex = index;
+                                  });
+                                  // _createpdf();
+                                  createpdf().then((value) {
+                                    setState(() {
+                                      progress = false;
+                                    });
+                                  });
+                                }
+                              },
+                            ),
+                            DropdownButton(
+                              icon: const Icon(Icons.more_vert),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'first',
+                                  child: Text("First"),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'second',
+                                  child: Text("second"),
+                                )
+                              ],
+                              onChanged: (value) {
+                                if (value == 'second') {
+                                  Get.to(() => Addresult(
+                                            data: allresultdata[index],
+                                            session: value,
+                                          ))!
+                                      .then((value) {
+                                    getresultdata();
+                                  });
+                                } else if (value == 'first') {
+                                  Get.to(() => Addresult(
+                                            data: allresultdata[index],
+                                            session: value,
+                                          ))!
+                                      .then((value) {
+                                    getresultdata();
+                                  });
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -586,7 +612,10 @@ class _ResultpageState extends State<Resultpage> {
       },
     ));
     List<int> bytes = await pdf.save();
-    SaveAndLaunchFile(bytes, 'output.pdf', context);
+    SaveAndLaunchFile(
+        bytes,
+        'result${DateTime.now().toString().replaceAll(':', '').replaceAll(' ', '').replaceAll('-', '')}.pdf',
+        context);
   }
 
   multipleresultdata(var ttf, index) {

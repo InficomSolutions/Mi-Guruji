@@ -61,6 +61,8 @@ class _ExaminfoState extends State<Examinfo> {
     getuserbalance();
   }
 
+  bool progress = false;
+  var downloadindex;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,110 +125,140 @@ class _ExaminfoState extends State<Examinfo> {
                     getexamdata[index]['description'],
                     style: TextStyle(color: blackcolor, fontSize: 25),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          var title = "${getexamdata[index]['exam_name']}"
-                              .replaceAll("/", " ");
-                          if (double.parse(
-                                  "${getexamdata[index]['rate'] ?? 0.00}") <=
-                              0) {
-                            downloadpdf(
-                                context,
-                                "${TGuruJiUrl.url}/${getexamdata[index]['exam_form']}",
-                                title);
-                          } else {
-                            if (double.parse(usertotal ?? 0) >=
-                                double.parse(
-                                    "${getexamdata[index]['rate'] ?? 0.00}")) {
-                              showDialog(
-                                context: context,
-                                builder: (context) => confirmationbox(context,
-                                    amount: getexamdata[index]['rate'],
-                                    onpress: () {
-                                  downloaddeduct(getexamdata[index]['rate'],
-                                          getexamdata[index]['exam_name'])
-                                      .then((value) {
-                                    getusertotal();
-                                    downloadpdf(
-                                        context,
-                                        "${TGuruJiUrl.url}/${getexamdata[index]['exam_form']}",
-                                        title);
+                  progress == true
+                      ? downloadindex == index
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : SizedBox.shrink()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                var title = "${getexamdata[index]['exam_name']}"
+                                    .replaceAll("/", " ");
+                                if (double.parse(
+                                        "${getexamdata[index]['rate'] ?? 0.00}") <=
+                                    0) {
+                                  setState(() {
+                                    progress = true;
+                                    downloadindex = index;
                                   });
-                                }),
-                              );
-                            } else {
-                              Fluttertoast.showToast(
-                                  msg: "Recharge Your Wallet");
-                            }
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: blackcolor,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: blackcolor)
-                              // gradient: LinearGradient(
-                              //     colors: [Colors.deepOrange, Colors.yellow])
-                              ),
-                          child: Text(
-                            'डाउनलोड करा',
-                            style: TextStyle(fontSize: 25, color: whitecolor),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: InkWell(
-                                            onTap: () {
-                                              Get.back();
-                                            },
-                                            child: Icon(Icons.close),
-                                          )),
+                                  downloadpdf(
+                                          context,
+                                          "${TGuruJiUrl.url}/${getexamdata[index]['exam_form']}",
+                                          title)
+                                      .then((value) {
+                                    setState(() {
+                                      progress = false;
+                                    });
+                                  });
+                                } else {
+                                  if (double.parse(usertotal ?? 0) >=
+                                      double.parse(
+                                          "${getexamdata[index]['rate'] ?? 0.00}")) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => confirmationbox(
+                                          context,
+                                          amount: getexamdata[index]['rate'],
+                                          onpress: () {
+                                        downloaddeduct(
+                                                getexamdata[index]['rate'],
+                                                getexamdata[index]['exam_name'])
+                                            .then((value) {
+                                               Navigator.pop(context);
+                                          getusertotal();
+                                          setState(() {
+                                            progress = true;
+                                            downloadindex = index;
+                                          });
+                                          downloadpdf(
+                                                  context,
+                                                  "${TGuruJiUrl.url}/${getexamdata[index]['exam_form']}",
+                                                  title)
+                                              .then((value) {
+                                            setState(() {
+                                              progress = false;
+                                            });
+                                          });
+                                        });
+                                      }),
+                                    );
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Recharge Your Wallet");
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: blackcolor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: blackcolor)
+                                    // gradient: LinearGradient(
+                                    //     colors: [Colors.deepOrange, Colors.yellow])
                                     ),
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.height /
-                                              1.3,
-                                      child: SfPdfViewer.network(
-                                          "${TGuruJiUrl.url}${getexamdata[index]['exam_form']}"),
-                                    ),
-                                  ],
+                                child: Text(
+                                  'डाउनलोड करा',
+                                  style: TextStyle(
+                                      fontSize: 25, color: whitecolor),
                                 ),
-                              );
-                            },
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: blackcolor,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: blackcolor)
-                              // gradient: LinearGradient(
-                              //     colors: [Colors.deepOrange, Colors.yellow])
                               ),
-                          child: Text(
-                            'PDF बघा',
-                            style: TextStyle(fontSize: 25, color: whitecolor),
-                          ),
-                        ),
-                      )
-                    ],
-                  )
+                            ),
+                            InkWell(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Align(
+                                                alignment: Alignment.topRight,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Get.back();
+                                                  },
+                                                  child: Icon(Icons.close),
+                                                )),
+                                          ),
+                                          Container(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                1.3,
+                                            child: SfPdfViewer.network(
+                                                "${TGuruJiUrl.url}${getexamdata[index]['exam_form']}"),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: blackcolor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: blackcolor)
+                                    // gradient: LinearGradient(
+                                    //     colors: [Colors.deepOrange, Colors.yellow])
+                                    ),
+                                child: Text(
+                                  'PDF बघा',
+                                  style: TextStyle(
+                                      fontSize: 25, color: whitecolor),
+                                ),
+                              ),
+                            )
+                          ],
+                        )
                 ],
               ),
             ),

@@ -45,6 +45,7 @@ class TGuruJiUrl {
   static const history = '${baseUrl}wallet_history';
   static const buyplan = '${baseUrl}subcribed_plan';
   static const getplan = '${baseUrl}subcribed_plan_user';
+  static const razorpayurl = '${baseUrl}razorpay_secret';
 }
 
 var weeklist = [
@@ -66,6 +67,7 @@ var weeklist = [
 List<bool> playpause = [];
 List player = [];
 List history = [];
+var razorpaykeyvalue;
 var usertotal;
 var userdownloads;
 var timetabledata = [];

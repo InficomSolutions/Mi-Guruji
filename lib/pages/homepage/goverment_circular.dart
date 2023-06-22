@@ -61,6 +61,8 @@ class _GovermentcircularState extends State<Govermentcircular> {
     getusertotal();
   }
 
+  bool progress = false;
+  var downloadindex;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -148,58 +150,87 @@ class _GovermentcircularState extends State<Govermentcircular> {
                                 ),
                               ),
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 2.2,
-                              child: MaterialButton(
-                                color: blackcolor,
-                                onPressed: () {
-                                  var title =
-                                      "${govermentcirculardata[index]['title']}"
-                                          .replaceAll("/", " ");
-                                  if (double.parse(
-                                          "${govermentcirculardata[index]['rate'] ?? 0.00}") <=
-                                      0) {
-                                    downloadpdf(
-                                        context,
-                                        "${TGuruJiUrl.url}/${govermentcirculardata[index]['pdf']}",
-                                        title);
-                                  } else {
-                                    if (double.parse(usertotal ?? 0) >=
-                                        double.parse(
-                                            "${govermentcirculardata[index]['rate'] ?? 0.00}")) {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => confirmationbox(
-                                            context,
-                                            amount: govermentcirculardata[index]
-                                                ['rate'], onpress: () {
-                                          downloaddeduct(
-                                                  govermentcirculardata[index]
-                                                      ['rate'],
-                                                  govermentcirculardata[index]
-                                                      ['title'])
-                                              .then((value) {
-                                            getusertotal();
-                                            downloadpdf(
-                                                context,
-                                                "${TGuruJiUrl.url}/${govermentcirculardata[index]['pdf']}",
-                                                title);
+                            progress == true
+                                ? downloadindex == index
+                                    ? Center(
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    : SizedBox.shrink()
+                                : Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.2,
+                                    child: MaterialButton(
+                                      color: blackcolor,
+                                      onPressed: () {
+                                        var title =
+                                            "${govermentcirculardata[index]['title']}"
+                                                .replaceAll("/", " ");
+                                        if (double.parse(
+                                                "${govermentcirculardata[index]['rate'] ?? 0.00}") <=
+                                            0) {
+                                          setState(() {
+                                            progress = true;
+                                            downloadindex = index;
                                           });
-                                        }),
-                                      );
-                                    } else {
-                                      Fluttertoast.showToast(
-                                          msg: "Recharge Your Wallet");
-                                    }
-                                  }
-                                },
-                                child: Text(
-                                  "डाउनलोड करा",
-                                  style: TextStyle(
-                                      color: whitecolor, fontSize: 25),
-                                ),
-                              ),
-                            ),
+                                          downloadpdf(
+                                                  context,
+                                                  "${TGuruJiUrl.url}/${govermentcirculardata[index]['pdf']}",
+                                                  title)
+                                              .then((value) {
+                                            setState(() {
+                                              progress = false;
+                                            });
+                                          });
+                                        } else {
+                                          if (double.parse(usertotal ?? 0) >=
+                                              double.parse(
+                                                  "${govermentcirculardata[index]['rate'] ?? 0.00}")) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  confirmationbox(
+                                                      context,
+                                                      amount:
+                                                          govermentcirculardata[
+                                                              index]['rate'],
+                                                      onpress: () {
+                                                downloaddeduct(
+                                                        govermentcirculardata[
+                                                            index]['rate'],
+                                                        govermentcirculardata[
+                                                            index]['title'])
+                                                    .then((value) {
+                                                       Navigator.pop(context);
+                                                  getusertotal();
+                                                  setState(() {
+                                                    progress = true;
+                                                    downloadindex = index;
+                                                  });
+                                                  downloadpdf(
+                                                          context,
+                                                          "${TGuruJiUrl.url}/${govermentcirculardata[index]['pdf']}",
+                                                          title)
+                                                      .then((value) {
+                                                    setState(() {
+                                                      progress = false;
+                                                    });
+                                                  });
+                                                });
+                                              }),
+                                            );
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg: "Recharge Your Wallet");
+                                          }
+                                        }
+                                      },
+                                      child: Text(
+                                        "डाउनलोड करा",
+                                        style: TextStyle(
+                                            color: whitecolor, fontSize: 25),
+                                      ),
+                                    ),
+                                  ),
                           ],
                         ),
                         Padding(

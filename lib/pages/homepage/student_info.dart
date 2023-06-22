@@ -24,7 +24,7 @@ class Studentinfo extends StatefulWidget {
 
 class _StudentinfoState extends State<Studentinfo> {
   final StudentController _controller = Get.put(StudentController());
-
+  bool progress = false;
   getstudentdata() async {
     var token = await Authcontroller().getToken();
     print("token$token");
@@ -119,26 +119,38 @@ class _StudentinfoState extends State<Studentinfo> {
                 style: TextStyle(color: blackcolor, fontSize: 30),
               ),
             ),
-            InkWell(
-              onTap: () {
-                // _createpdf();
-                createpdf();
-              },
-              child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: bluecolor,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: blackcolor)
-                    // gradient: LinearGradient(
-                    //     colors: [Colors.deepOrange, Colors.yellow])
+            progress == true
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : InkWell(
+                    onTap: () {
+                      // _createpdf();
+                      setState(() {
+                        progress = true;
+                      });
+                      // _createpdf();
+                      createpdf().then((value) {
+                        setState(() {
+                          progress = false;
+                        });
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: bluecolor,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: blackcolor)
+                          // gradient: LinearGradient(
+                          //     colors: [Colors.deepOrange, Colors.yellow])
+                          ),
+                      child: Text(
+                        'पीडीएफ डाउनलोड करा',
+                        style: TextStyle(fontSize: 25, color: whitecolor),
+                      ),
                     ),
-                child: Text(
-                  'पीडीएफ डाउनलोड करा',
-                  style: TextStyle(fontSize: 25, color: whitecolor),
-                ),
-              ),
-            ),
+                  ),
             Divider(
               color: blackcolor,
             ),
@@ -302,6 +314,9 @@ class _StudentinfoState extends State<Studentinfo> {
       },
     ));
     List<int> bytes = await pdf.save();
-    SaveAndLaunchFile(bytes, 'output.pdf', context);
+    SaveAndLaunchFile(
+        bytes,
+        'student${DateTime.now().toString().replaceAll(':', '').replaceAll(' ', '').replaceAll('-', '')}.pdf',
+        context);
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,30 +23,36 @@ Future<void> SaveAndLaunchFile(
       break;
     }
   }
-  newPath = "$newPath/miguruji";
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+  int apiLevel = androidInfo.version.sdkInt;
+  print(apiLevel);
+  if (apiLevel < 29) {
+    newPath = "$newPath/miguruji";
+  } else {
+    newPath = "$newPath/Download";
+  }
   directory = Directory(newPath);
-  var status = await Permission.manageExternalStorage.status;
+  var status = await Permission.storage.status;
 
-  while (!status.isGranted) {
-    await Permission.manageExternalStorage.request();
+  if (!status.isGranted) {
+    await Permission.storage.request();
   }
 
   if (!await directory.exists()) {
     directory.create();
   }
 
-  if (await directory.exists()) {
-    file = File("${directory.path}/$filename");
+  file = File("${directory.path}/$filename");
 
-    await file.writeAsBytes(bytes);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text("${directory.path}/$filename")));
-    Get.to(
-      Generatedpdfview(
-        filename: file,
-      ),
-    );
-  }
+  await file.writeAsBytes(bytes);
+  Fluttertoast.showToast(msg: "${directory.path}/$filename");
+  Get.to(
+    Generatedpdfview(
+      filename: file,
+    ),
+  );
+
   print(directory.path);
   // final file1 = File('${directory!.path}/$filename');
   // await file1.writeAsBytes(bytes, flush: true);

@@ -50,6 +50,23 @@ class _PlanspageState extends State<Planspage> {
     }
   }
 
+  getrazorypaykey() async {
+    var token = await Authcontroller().getToken();
+    try {
+      var response =
+          await http.get(Uri.parse(TGuruJiUrl.razorpayurl), headers: {
+        'token': "${token ?? widget.token}",
+      });
+      debugPrint("=======res ${response.statusCode}");
+      var res = jsonDecode(response.body);
+      setState(() {
+        razorpaykeyvalue = res['data'][0]['key_id'];
+      });
+    } catch (e) {
+      print(e.toString);
+    }
+  }
+
   checkdata() {
     for (var d in plansdata) {
       if (d['id'] == subscribeddata[0]['plan_id']) {
@@ -77,6 +94,7 @@ class _PlanspageState extends State<Planspage> {
     super.initState();
     getplans();
     getsubcribevalue();
+    getrazorypaykey();
     initializeRazorpay();
   }
 
@@ -91,7 +109,7 @@ class _PlanspageState extends State<Planspage> {
     var totalval = doublevalue.toInt() * 100;
 
     var options = {
-      'key': "rzp_test_UqEJE4kPgpZccE",
+      'key': "$razorpaykeyvalue",
       'amount': totalval,
       'currency': 'INR',
       'name': 'Mi Guruji',
@@ -174,6 +192,7 @@ class _PlanspageState extends State<Planspage> {
 
   @override
   Widget build(BuildContext context) {
+    print(razorpaykeyvalue);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: blackcolor,

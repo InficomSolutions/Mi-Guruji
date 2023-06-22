@@ -53,53 +53,55 @@ class _LetterPadViewState extends State<LetterPadView> {
             const SizedBox(height: 20),
             pdfView(date, context),
             const SizedBox(height: 20),
-            InkWell(
-              onTap: () async {
-                setState(() {
-                  downloading = true;
-                });
-                downloadcount();
-                final Uint8List image = await controller.captureFromWidget(
-                    pdfView(date, context),
-                    pixelRatio: 10.0,
-                    context: context);
-                final pdf = pw.Document();
-                pdf.addPage(pw.Page(build: (pw.Context context) {
-                  final im = pw.MemoryImage(image);
-                  return pw.Center(
-                    child: pw.Image(im),
-                  ); // Center
-                }));
+            downloading == true
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : InkWell(
+                    onTap: () async {
+                      setState(() {
+                        downloading = true;
+                      });
+                      downloadcount();
+                      final Uint8List image = await controller
+                          .captureFromWidget(pdfView(date, context),
+                              context: context);
+                      final pdf = pw.Document();
+                      pdf.addPage(pw.Page(build: (pw.Context context) {
+                        final im = pw.MemoryImage(image);
+                        return pw.Center(
+                          child: pw.Image(im),
+                        ); // Center
+                      }));
 
-                List<int> bytes = await pdf.save();
-                Fluttertoast.showToast(msg: "Saving pdf");
-                SaveAndLaunchFile(bytes, 'letterpad.pdf', context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.deepOrange, Colors.blue]),
-                      border: Border.all(color: blackcolor, width: 2),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Center(
-                      child: downloading
-                          ? CircularProgressIndicator(
-                              color: whitecolor,
-                            )
-                          : Text(
-                              "लेटरपॅड डाउनलोड करा",
-                              style: TextStyle(
-                                color: whitecolor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            )),
-                ),
-              ),
-            )
+                      List<int> bytes = await pdf.save();
+                      Fluttertoast.showToast(msg: "Saving pdf");
+                      SaveAndLaunchFile(bytes, 'letterpad.pdf', context);
+                      setState(() {
+                        downloading = false;
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [Colors.deepOrange, Colors.blue]),
+                            border: Border.all(color: blackcolor, width: 2),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                            child: Text(
+                          "लेटरपॅड डाउनलोड करा",
+                          style: TextStyle(
+                            color: whitecolor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        )),
+                      ),
+                    ),
+                  )
           ],
         ),
       ),

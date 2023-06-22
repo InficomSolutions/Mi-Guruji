@@ -59,6 +59,8 @@ class _FormlistpageState extends State<Formlistpage> {
     getuserbalance();
   }
 
+  bool progress = false;
+  var downloadindex;
   @override
   Widget build(BuildContext context) {
     print(formdata);
@@ -110,68 +112,98 @@ class _FormlistpageState extends State<Formlistpage> {
                       ],
                     ),
                     SizedBox(height: 20),
-                    InkWell(
-                      onTap: () {
-                        var title =
-                            "${formdata[index]['title']}".replaceAll("/", " ");
-                        if (double.parse(
-                                "${formdata[index]['rate'] ?? 0.00}") <=
-                            0) {
-                          downloadpdf(
-                              context,
-                              "${TGuruJiUrl.url}/${formdata[index]['pdf']}",
-                              title);
-                        } else {
-                          if (double.parse(usertotal ?? 0 ?? 0) >=
-                              double.parse(
-                                  "${formdata[index]['rate'] ?? 0.00}")) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => confirmationbox(context,
-                                  amount: formdata[index]['rate'], onpress: () {
-                                downloaddeduct(formdata[index]['rate'],
-                                        formdata[index]['title'])
-                                    .then((value) {
-                                  getusertotal();
-                                  downloadpdf(
-                                      context,
-                                      "${TGuruJiUrl.url}/${formdata[index]['pdf']}",
-                                      title);
+                    progress == true
+                        ? downloadindex == index
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SizedBox.shrink()
+                        : InkWell(
+                            onTap: () {
+                              var title = "${formdata[index]['title']}"
+                                  .replaceAll("/", " ");
+                              if (double.parse(
+                                      "${formdata[index]['rate'] ?? 0.00}") <=
+                                  0) {
+                                setState(() {
+                                  progress = true;
+                                  downloadindex = index;
                                 });
-                              }),
-                            );
-                          } else {
-                            Fluttertoast.showToast(msg: "Recharge Your Wallet");
-                          }
-                        }
-                      },
-                      child: Container(
-                        // width: MediaQuery.of(context).size.width / 2,
-                        decoration: BoxDecoration(
-                            color: blackcolor,
-                            border: Border.all(color: whitecolor, width: 1.2),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("डाउनलोड करा",
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
+                                downloadpdf(
+                                        context,
+                                        "${TGuruJiUrl.url}/${formdata[index]['pdf']}",
+                                        title)
+                                    .then((value) {
+                                  setState(() {
+                                    progress = false;
+                                  });
+                                });
+                              } else {
+                                if (double.parse(usertotal ?? 0 ?? 0) >=
+                                    double.parse(
+                                        "${formdata[index]['rate'] ?? 0.00}")) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => confirmationbox(
+                                        context,
+                                        amount: formdata[index]['rate'],
+                                        onpress: () {
+                                      downloaddeduct(formdata[index]['rate'],
+                                              formdata[index]['title'])
+                                          .then((value) {
+                                             Navigator.pop(context);
+                                        getusertotal();
+                                        setState(() {
+                                          progress = true;
+                                          downloadindex = index;
+                                        });
+                                        downloadpdf(
+                                                context,
+                                                "${TGuruJiUrl.url}/${formdata[index]['pdf']}",
+                                                title)
+                                            .then((value) {
+                                          setState(() {
+                                            progress = false;
+                                          });
+                                        });
+                                      });
+                                    }),
+                                  );
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: "Recharge Your Wallet");
+                                }
+                              }
+                            },
+                            child: Container(
+                              // width: MediaQuery.of(context).size.width / 2,
+                              decoration: BoxDecoration(
+                                  color: blackcolor,
+                                  border:
+                                      Border.all(color: whitecolor, width: 1.2),
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("डाउनलोड करा",
+                                        style: TextStyle(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            color: whitecolor,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16)),
+                                    Icon(
+                                      Icons.download,
                                       color: whitecolor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16)),
-                              Icon(
-                                Icons.download,
-                                color: whitecolor,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

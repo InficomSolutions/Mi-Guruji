@@ -171,7 +171,7 @@ class _RefferalPageState extends State<RefferalPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Refffer Now ",
+                            "Refer Now ",
                             textScaleFactor: 1.5,
                             style: TextStyle(color: blackcolor),
                           ),

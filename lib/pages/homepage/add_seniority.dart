@@ -204,13 +204,8 @@ class _AddSeniorityState extends State<AddSeniority> {
                 controller: minority,
                 labelText: "minority",
               ),
-              Row(
-                children: [
-                  datepick(joineddate, 'Joined Date'),
-                  datepick(
-                      presentschooljoineddate, 'Present school joined date'),
-                ],
-              ),
+              datepick(joineddate, 'Joined Date'),
+              datepick(presentschooljoineddate, 'Present school joined date'),
               datepick(talukajoineddate, 'Taluka joined date'),
               CustomTextField(
                 validator: (p0) {
@@ -324,7 +319,10 @@ class _AddSeniorityState extends State<AddSeniority> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(text),
+                Text(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

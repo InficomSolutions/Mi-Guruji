@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,15 @@ void main() async {
   await GetStorage.init();
   var value = await Dynamiclinkprovider().initdynamiclink();
   Authcontroller().storerefferal("$value");
+  FirebaseMessaging.instance.subscribeToTopic("all").whenComplete(() {
+    FirebaseMessaging.onMessage.listen(backgroundHnadler);
+  });
+  FirebaseMessaging.onBackgroundMessage(backgroundHnadler);
   runApp(const MyApp());
 }
+
+@pragma('vm:entry-point')
+Future backgroundHnadler(RemoteMessage message) async {}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

@@ -58,6 +58,8 @@ class _QuestionpaperState extends State<Questionpaper> {
     getusertotal();
   }
 
+  bool progress = false;
+  var downloadindex;
   @override
   Widget build(BuildContext context) {
     print(questionpaperdata);
@@ -138,58 +140,85 @@ class _QuestionpaperState extends State<Questionpaper> {
                               ],
                             ),
                           ),
-                          Container(
-                            // width: MediaQuery.of(context).size.width / 3,
-                            child: MaterialButton(
-                              color: blackcolor,
-                              onPressed: () {
-                                var title =
-                                    "${questionpaperdata[index]['title']}"
-                                        .replaceAll("/", " ");
-                                if (double.parse(
-                                        "${questionpaperdata[index]['rate']}") <=
-                                    0) {
-                                  downloadpdf(
-                                      context,
-                                      "${TGuruJiUrl.url}/${questionpaperdata[index]['pdf']}",
-                                      title);
-                                } else {
-                                  if (double.parse(usertotal ?? 0) >=
-                                      double.parse(
-                                          "${questionpaperdata[index]['rate'] ?? 0.00}")) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => confirmationbox(
-                                          context,
-                                          amount: questionpaperdata[index]
-                                              ['rate'], onpress: () {
-                                        downloaddeduct(
-                                                questionpaperdata[index]
-                                                    ['rate'],
-                                                questionpaperdata[index]
-                                                    ['title'])
-                                            .then((value) {
-                                          getusertotal();
-                                          downloadpdf(
-                                              context,
-                                              "${TGuruJiUrl.url}/${questionpaperdata[index]['pdf']}",
-                                              title);
+                          progress == true
+                              ? downloadindex == index
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : SizedBox.shrink()
+                              : Container(
+                                  // width: MediaQuery.of(context).size.width / 3,
+                                  child: MaterialButton(
+                                    color: blackcolor,
+                                    onPressed: () {
+                                      var title =
+                                          "${questionpaperdata[index]['title']}"
+                                              .replaceAll("/", " ");
+                                      if (double.parse(
+                                              "${questionpaperdata[index]['rate']}") <=
+                                          0) {
+                                        setState(() {
+                                          progress = true;
+                                          downloadindex = index;
                                         });
-                                      }),
-                                    );
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: "Recharge Your Wallet");
-                                  }
-                                }
-                              },
-                              child: Text(
-                                "डाउनलोड करा",
-                                style:
-                                    TextStyle(color: whitecolor, fontSize: 25),
-                              ),
-                            ),
-                          ),
+                                        downloadpdf(
+                                                context,
+                                                "${TGuruJiUrl.url}/${questionpaperdata[index]['pdf']}",
+                                                title)
+                                            .then((value) {
+                                          setState(() {
+                                            progress = false;
+                                          });
+                                        });
+                                      } else {
+                                        if (double.parse(usertotal ?? 0) >=
+                                            double.parse(
+                                                "${questionpaperdata[index]['rate'] ?? 0.00}")) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) =>
+                                                confirmationbox(context,
+                                                    amount:
+                                                        questionpaperdata[index]
+                                                            ['rate'],
+                                                    onpress: () {
+                                              downloaddeduct(
+                                                      questionpaperdata[index]
+                                                          ['rate'],
+                                                      questionpaperdata[index]
+                                                          ['title'])
+                                                  .then((value) {
+                                                Navigator.pop(context);
+                                                getusertotal();
+                                                setState(() {
+                                                  progress = true;
+                                                  downloadindex = index;
+                                                });
+                                                downloadpdf(
+                                                        context,
+                                                        "${TGuruJiUrl.url}/${questionpaperdata[index]['pdf']}",
+                                                        title)
+                                                    .then((value) {
+                                                  setState(() {
+                                                    progress = false;
+                                                  });
+                                                });
+                                              });
+                                            }),
+                                          );
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg: "Recharge Your Wallet");
+                                        }
+                                      }
+                                    },
+                                    child: Text(
+                                      "डाउनलोड करा",
+                                      style: TextStyle(
+                                          color: whitecolor, fontSize: 25),
+                                    ),
+                                  ),
+                                ),
                         ],
                       ),
                     ),

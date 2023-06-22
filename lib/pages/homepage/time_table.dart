@@ -66,6 +66,7 @@ class _TimetablepageState extends State<Timetablepage> {
     }
   }
 
+  bool progress = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,7 +221,15 @@ class _TimetablepageState extends State<Timetablepage> {
                               onTap: () async {
                                 await sepratedata(
                                     serpratetimetablewithclass[index]);
-                                createpdf();
+                                setState(() {
+                                  progress = true;
+                                });
+                                // _createpdf();
+                                createpdf().then((value) {
+                                  setState(() {
+                                    progress = false;
+                                  });
+                                });
                               },
                               child: Icon(Icons.download)),
                         ],

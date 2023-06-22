@@ -75,7 +75,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ),
                     const Spacer(),
                     Text(
-                      usertotal ?? "0",
+                      "₹ ${usertotal ?? 0}",
                       style: bold(15, whitecolor),
                     ),
                   ],

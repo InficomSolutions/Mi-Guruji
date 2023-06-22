@@ -62,29 +62,23 @@ class APiProvider extends GetConnect {
       "address": _schoolController.schoolAddr.value.text,
       "foundation_year": _schoolController.foundation.value.text,
       "udais_no": _schoolController.udaisNo.value.text,
-      "index_no": _schoolController.index.value.text
+      "index_no": _schoolController.index.value.text,
+      "center_no": _schoolController.ssc.value.text,
     };
     try {
       Get.dialog(const Center(
         child: CircularProgressIndicator(),
       ));
-      var response =
-          await post(TGuruJiUrl.schoolRegistration, jsonEncode(body), headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+      var response = await http
+          .post(Uri.parse(TGuruJiUrl.schoolRegistration), body: body, headers: {
         'token': "$token",
       });
       debugPrint("=======res ${response.statusCode}");
-      Get.back();
+      print(response.body);
+      print(response.runtimeType);
       var res = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        var data = response.body["response"];
-        var msg = data["response_message"];
-        debugPrint("=======msg ${msg}");
-        return msg;
-      } else {
-        ShowCustomSnackBar().ErrorSnackBar(response.body["message"]);
-      }
+      print(res);
+      Get.back();
     } catch (e) {
       Get.back();
       debugPrint("=============   ${e.toString()}");

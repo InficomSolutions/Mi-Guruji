@@ -236,17 +236,18 @@ class _WalletpageState extends State<Walletpage> {
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
                                         children: [
-                                          Text(
-                                            "Reason: ${history[index]['reason']}",
-                                            style: const TextStyle(
-                                              color: Colors.white,
+                                          Expanded(
+                                            child: Text(
+                                              "Reason: ${history[index]['reason']}",
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
+                                          Spacer(),
                                           Text(
-                                            "${history[index][int.parse(history[index]['credit_wallet']) == 0 ? 'debit_wallet' : "credit_wallet"]}",
+                                            "₹${history[index][int.parse(history[index]['credit_wallet']) == 0 ? 'debit_wallet' : "credit_wallet"]}",
                                             style: const TextStyle(
                                                 color: Colors.white),
                                           ),

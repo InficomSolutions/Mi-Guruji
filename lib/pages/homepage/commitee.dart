@@ -61,6 +61,8 @@ class _CommiteeState extends State<Commitee> {
     getuserbalance();
   }
 
+  bool progress = false;
+  var downloadindex;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,55 +124,84 @@ class _CommiteeState extends State<Commitee> {
                           style: TextStyle(fontSize: 20),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          var title = "${commiteedata[index]['title']}"
-                              .replaceAll("/", " ");
-                          if (double.parse(
-                                  "${commiteedata[index]['rate'] ?? 0.00}") <=
-                              0) {
-                            downloadpdf(
-                                context,
-                                "${TGuruJiUrl.url}/${commiteedata[index]['pdf']}",
-                                title);
-                          } else {
-                            if (double.parse(usertotal ?? 0) >=
-                                double.parse(
-                                    "${commiteedata[index]['rate'] ?? 0.00}")) {
-                              showDialog(
-                                context: context,
-                                builder: (context) => confirmationbox(context,
-                                    amount: commiteedata[index]['rate'],
-                                    onpress: () {
-                                  downloaddeduct(commiteedata[index]['rate'],
-                                          commiteedata[index]['title'])
-                                      .then((value) {
-                                    getusertotal();
-                                    downloadpdf(
-                                        context,
-                                        "${TGuruJiUrl.url}/${commiteedata[index]['pdf']}",
-                                        title);
+                      progress == true
+                          ? downloadindex == index
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : SizedBox.shrink()
+                          : InkWell(
+                              onTap: () {
+                                var title = "${commiteedata[index]['title']}"
+                                    .replaceAll("/", " ");
+                                if (double.parse(
+                                        "${commiteedata[index]['rate'] ?? 0.00}") <=
+                                    0) {
+                                  setState(() {
+                                    progress = true;
+                                    downloadindex = index;
                                   });
-                                }),
-                              );
-                            } else {
-                              Fluttertoast.showToast(
-                                  msg: "Recharge Your Wallet");
-                            }
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                  colors: [Colors.deepOrange, Colors.yellow])),
-                          child: Text(
-                            'डाउनलोड करा',
-                            style: TextStyle(fontSize: 25),
-                          ),
-                        ),
-                      )
+                                  downloadpdf(
+                                          context,
+                                          "${TGuruJiUrl.url}/${commiteedata[index]['pdf']}",
+                                          title)
+                                      .then((value) {
+                                    setState(() {
+                                      progress = false;
+                                    });
+                                  });
+                                } else {
+                                  if (double.parse(usertotal ?? 0) >=
+                                      double.parse(
+                                          "${commiteedata[index]['rate'] ?? 0.00}")) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => confirmationbox(
+                                          context,
+                                          amount: commiteedata[index]['rate'],
+                                          onpress: () {
+                                        downloaddeduct(
+                                                commiteedata[index]['rate'],
+                                                commiteedata[index]['title'])
+                                            .then((value) {
+                                          Navigator.pop(context);
+                                          getusertotal();
+                                          setState(() {
+                                            progress = true;
+                                            downloadindex = index;
+                                          });
+                                          downloadpdf(
+                                                  context,
+                                                  "${TGuruJiUrl.url}/${commiteedata[index]['pdf']}",
+                                                  title)
+                                              .then((value) {
+                                            setState(() {
+                                              progress = false;
+                                            });
+                                          });
+                                        });
+                                      }),
+                                    );
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Recharge Your Wallet");
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    gradient: LinearGradient(colors: [
+                                      Colors.deepOrange,
+                                      Colors.yellow
+                                    ])),
+                                child: Text(
+                                  'डाउनलोड करा',
+                                  style: TextStyle(fontSize: 25),
+                                ),
+                              ),
+                            )
                     ],
                   )
                 ],
